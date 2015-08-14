@@ -9,10 +9,15 @@ with System.Storage_Elements;
 
 generic
    c_rounds, d_rounds : Positive;
-   k0, k1 : Interfaces.Unsigned_64;
+   k0 : Interfaces.Unsigned_64 := 16#0706050403020100#;
+   k1 : Interfaces.Unsigned_64 := 16#0f0e0d0c0b0a0908#;
 package SipHash is
 
    procedure SetKey (k0, k1 : Interfaces.Unsigned_64);
+   -- SetKey changes the key used by the package to generate hash values. It is
+   -- particularly useful if you want to avoid dynamic elaboration.
+
+   procedure SetKey (k : System.Storage_Elements.Storage_Array);
    -- SetKey changes the key used by the package to generate hash values. It is
    -- particularly useful if you want to avoid dynamic elaboration.
 

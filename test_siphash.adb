@@ -16,9 +16,9 @@ procedure Test_SipHash is
 
    -- This matches is the test vector setup in the paper.
    package Test_SipHash is new SipHash(c_rounds => 2,
-                               d_rounds => 4,
-                               k0 => 16#0706050403020100#,
-                               k1 => 16#0f0e0d0c0b0a0908#);
+                                       d_rounds => 4);
+   K : constant System.Storage_Elements.Storage_Array :=
+     (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
    M : constant System.Storage_Elements.Storage_Array :=
      (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14);
    R : Interfaces.Unsigned_64;
@@ -30,6 +30,7 @@ begin
    Put_Line("Test vector described in Appendix A to the paper " &
            "'SipHash: a fast short-input PRF'");
    Put_Line("by Jean-Philippe Aumasson and Daniel J. Bernstein.");
+   Test_SipHash.SetKey(K);
    R := Test_SipHash.SipHash(M);
    Put("Result received: "); Put(R, Base => 16); New_Line;
    Put("Result expected: "); Put(Expected_R, Base => 16); New_Line;
