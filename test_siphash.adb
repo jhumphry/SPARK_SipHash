@@ -4,10 +4,11 @@
 -- by Jean-Philippe Aumasson and Daniel J. Bernstein
 
 with Ada.Text_IO; use Ada.Text_IO;
-with Interfaces;
+with Interfaces, Interfaces.C;
 with System.Storage_Elements;
 
 with SipHash;
+with SipHash24_c;
 
 procedure Test_SipHash is
 
@@ -21,17 +22,36 @@ procedure Test_SipHash is
      (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
    M : constant System.Storage_Elements.Storage_Array :=
      (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14);
-   R : Interfaces.Unsigned_64;
-   Expected_R : constant Interfaces.Unsigned_64 := 16#a129ca6149be45e5#;
+   Result : Interfaces.Unsigned_64;
+
+   C_K : aliased SipHash24_c.U8_Array(0..15) :=
+     (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+   C_M : aliased SipHash24_c.U8_Array(0..14) :=
+     (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14);
+   C_Output : aliased SipHash24_c.U8_Array8 := (others => 0);
+   C_Result : Interfaces.Unsigned_64;
+   Discard : Interfaces.C.int;
+
+   Expected_Result : constant Interfaces.Unsigned_64 := 16#a129ca6149be45e5#;
 begin
-   Put_Line("Testing SipHash routine.");
+   Put_Line("Testing SipHash routines.");
    New_Line;
 
    Put_Line("Test vector described in Appendix A to the paper " &
            "'SipHash: a fast short-input PRF'");
    Put_Line("by Jean-Philippe Aumasson and Daniel J. Bernstein.");
+
    Test_SipHash.SetKey(K);
-   R := Test_SipHash.SipHash(M);
-   Put("Result received: "); Put(R, Base => 16); New_Line;
-   Put("Result expected: "); Put(Expected_R, Base => 16); New_Line;
+   Result := Test_SipHash.SipHash(M);
+   Put("Result received from Ada routine: "); Put(Result, Base => 16); New_Line;
+
+   Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
+                                      c_in => C_M(0)'Access,
+                                      inlen => C_M'Length,
+                                      k => C_K(0)'Access);
+   C_Result := SipHash24_c.U8_Array8_to_U64(C_Output);
+   Put("Result received from reference C routine: ");
+   Put(C_Result, Base => 16); New_Line;
+
+   Put("Result expected: "); Put(Expected_Result, Base => 16); New_Line;
 end Test_SipHash;
