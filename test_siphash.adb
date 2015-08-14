@@ -78,11 +78,8 @@ begin
    New_Line;
 
    Put_Line("Testing hash of: '" & Test_String & "'");
-   Test_String_Result := Test_SipHash24.SipHash(Test_String);
-   Put("Result received from Ada routine (truncated for use in Ada.Containers): ");
-   Put(Test_String_Result, Base => 16); New_Line;
    Test_String_Result := SipHash24_String(Test_String);
-   Put("Result received from Ada routine for generic discrete types: ");
+   Put("Result received from Ada routine (truncated for use in Ada.Containers): ");
    Put(Test_String_Result, Base => 16); New_Line;
 
    Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
