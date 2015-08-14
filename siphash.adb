@@ -15,13 +15,17 @@ package body SipHash is
    subtype Storage_Element is System.Storage_Elements.Storage_Element;
    subtype SArray is System.Storage_Elements.Storage_Array;
    subtype SArray_8 is System.Storage_Elements.Storage_Array(0..7);
+   subtype String_8 is String(1..8);
 
    -- The state array of the SipHash function
    type SipHash_State is array (Integer range 0..3) of U64;
 
    function SArray8_to_U64_LE (S : in SArray_8) return U64 with Inline;
    function SArray_to_U64_LE (S : in SArray; Total_Length : in Natural)
-                              return U64 with Inline;
+                              return U64 with Inline, Pre => (S'Length <= 7);
+   function String_8_to_U64_LE (S : in String_8) return U64 with Inline;
+   function String_to_U64_LE (S : in String; Total_Length : in Natural)
+                              return U64 with Inline, Pre => (S'Length <= 7);
    procedure SipRound (v : in out SipHash_State) with Inline;
    function SipFinalization (v : in out SipHash_State) return U64 with Inline;
 
@@ -73,6 +77,47 @@ package body SipHash is
       R := R or Shift_Left(U64(Total_Length mod 256), 56);
       return R;
    end SArray_to_U64_LE;
+
+   -----------------------
+   -- String8_to_U64_LE --
+   -----------------------
+
+   function String_8_to_U64_LE (S : in String_8) return U64 is
+     (U64(Character'Pos(S(1)))
+      or Shift_Left(U64(Character'Pos(S(2))), 8)
+      or Shift_Left(U64(Character'Pos(S(3))), 16)
+      or Shift_Left(U64(Character'Pos(S(4))), 24)
+      or Shift_Left(U64(Character'Pos(S(5))), 32)
+      or Shift_Left(U64(Character'Pos(S(6))), 40)
+      or Shift_Left(U64(Character'Pos(S(7))), 48)
+      or Shift_Left(U64(Character'Pos(S(8))), 56));
+
+   ----------------------
+   -- String_to_U64_LE --
+   ----------------------
+
+   function String_to_U64_LE (S : in String; Total_Length : in Natural)
+                              return U64 is
+      R : U64 := 0;
+   begin
+      case S'Length is
+         when 0 =>
+            null;
+         when 1..7 =>
+            declare
+               Shift : Natural := 0;
+            begin
+               for I of S loop
+                  R := R or Shift_Left(U64(Character'Pos(I)), Shift);
+                  Shift := Shift + 8;
+               end loop;
+            end;
+         when others =>
+            raise Program_Error with "Too many bytes passed...";
+      end case;
+      R := R or Shift_Left(U64(Total_Length mod 256), 56);
+      return R;
+   end String_to_U64_LE;
 
    --------------
    -- SipRound --
@@ -137,11 +182,31 @@ package body SipHash is
    -------------
 
    function SipHash (Key : String) return Ada.Containers.Hash_Type is
+      Key_pos : Integer := Key'First;
+      Key_i : U64;
+      v : SipHash_State := initial_v;
+      w : constant Natural := (Key'Length / 8) + 1;
+      Result : U64;
    begin
-      --  Generated stub: replace with real body!
-      -- pragma Compile_Time_Warning (Standard.True, "SipHash unimplemented");
-      raise Program_Error with "Unimplemented function SipHash";
-      return SipHash (Key);
+      for I in 1..w-1 loop
+         Key_i := String_8_to_U64_LE(Key(Key_pos..Key_pos+7));
+         v(3) := v(3) xor Key_i;
+         for J in 1..c_rounds loop
+            SipRound(v);
+         end loop;
+         v(0) := v(0) xor Key_i;
+         Key_pos := Key_pos + 8;
+      end loop;
+
+      Key_i := String_to_U64_LE(Key(Key_pos..Key'Last), Key'Length);
+      v(3) := v(3) xor Key_i;
+      for J in 1..c_rounds loop
+         SipRound(v);
+      end loop;
+      v(0) := v(0) xor Key_i;
+
+      Result := SipFinalization(v);
+      return Ada.Containers.Hash_Type'Mod(Result);
    end SipHash;
 
    -------------
