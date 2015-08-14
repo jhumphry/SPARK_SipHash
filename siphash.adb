@@ -38,18 +38,14 @@ package body SipHash is
    -----------------------
 
    function SArray8_to_U64_LE (S : in SArray_8) return U64 is
-      R : U64 := 0;
-   begin
-      R := R or U64(S(0));
-      R := R or Shift_Left(U64(S(1)), 8);
-      R := R or Shift_Left(U64(S(2)), 16);
-      R := R or Shift_Left(U64(S(3)), 24);
-      R := R or Shift_Left(U64(S(4)), 32);
-      R := R or Shift_Left(U64(S(5)), 40);
-      R := R or Shift_Left(U64(S(6)), 48);
-      R := R or Shift_Left(U64(S(7)), 56);
-      return R;
-   end SArray8_to_U64_LE;
+     (U64(S(0))
+      or Shift_Left(U64(S(1)), 8)
+      or Shift_Left(U64(S(2)), 16)
+      or Shift_Left(U64(S(3)), 24)
+      or Shift_Left(U64(S(4)), 32)
+      or Shift_Left(U64(S(5)), 40)
+      or Shift_Left(U64(S(6)), 48)
+      or Shift_Left(U64(S(7)), 56));
 
    ----------------------
    -- SArray_to_U64_LE --
