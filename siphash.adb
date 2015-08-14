@@ -18,11 +18,11 @@ package body SipHash is
    subtype String_8 is String(1..8);
 
    function SArray8_to_U64_LE (S : in SArray_8) return U64 with Inline;
-   function SArray_to_U64_LE (S : in SArray; Total_Length : in Natural)
-                              return U64 with Inline, Pre => (S'Length <= 7);
+   function SArray_Tail_to_U64_LE (S : in SArray; Total_Length : in Natural)
+                                   return U64 with Inline, Pre => (S'Length <= 7);
    function String_8_to_U64_LE (S : in String_8) return U64 with Inline;
-   function String_to_U64_LE (S : in String; Total_Length : in Natural)
-                              return U64 with Inline, Pre => (S'Length <= 7);
+   function String_Tail_to_U64_LE (S : in String; Total_Length : in Natural)
+                                   return U64 with Inline, Pre => (S'Length <= 7);
 
    -----------------------
    -- SArray8_to_U64_LE --
@@ -42,28 +42,18 @@ package body SipHash is
    -- SArray_to_U64_LE --
    ----------------------
 
-   function SArray_to_U64_LE (S : in SArray; Total_Length : in Natural)
+   function SArray_Tail_to_U64_LE (S : in SArray; Total_Length : in Natural)
                               return U64 is
       R : U64 := 0;
+      Shift : Natural := 0;
    begin
-      case S'Length is
-         when 0 =>
-            null;
-         when 1..7 =>
-            declare
-               Shift : Natural := 0;
-            begin
-               for I of S loop
-                  R := R or Shift_Left(U64(I), Shift);
-                  Shift := Shift + 8;
-               end loop;
-            end;
-         when others =>
-            raise Program_Error with "Too many bytes passed...";
-      end case;
+      for I of S loop
+         R := R or Shift_Left(U64(I), Shift);
+         Shift := Shift + 8;
+      end loop;
       R := R or Shift_Left(U64(Total_Length mod 256), 56);
       return R;
-   end SArray_to_U64_LE;
+   end SArray_Tail_to_U64_LE;
 
    -----------------------
    -- String8_to_U64_LE --
@@ -83,28 +73,19 @@ package body SipHash is
    -- String_to_U64_LE --
    ----------------------
 
-   function String_to_U64_LE (S : in String; Total_Length : in Natural)
+   function String_Tail_to_U64_LE (S : in String; Total_Length : in Natural)
                               return U64 is
       R : U64 := 0;
+      Shift : Natural := 0;
    begin
-      case S'Length is
-         when 0 =>
-            null;
-         when 1..7 =>
-            declare
-               Shift : Natural := 0;
-            begin
-               for I of S loop
-                  R := R or Shift_Left(U64(Character'Pos(I)), Shift);
-                  Shift := Shift + 8;
-               end loop;
-            end;
-         when others =>
-            raise Program_Error with "Too many bytes passed...";
-      end case;
+      for I of S loop
+         R := R or Shift_Left(U64(Character'Pos(I)), Shift);
+         Shift := Shift + 8;
+      end loop;
+
       R := R or Shift_Left(U64(Total_Length mod 256), 56);
       return R;
-   end String_to_U64_LE;
+   end String_Tail_to_U64_LE;
 
    --------------
    -- SipRound --
@@ -186,7 +167,7 @@ package body SipHash is
          Key_pos := Key_pos + 8;
       end loop;
 
-      Key_i := String_to_U64_LE(Key(Key_pos..Key'Last), Key'Length);
+      Key_i := String_Tail_to_U64_LE(Key(Key_pos..Key'Last), Key'Length);
       v(3) := v(3) xor Key_i;
       for J in 1..c_rounds loop
          SipRound(v);
@@ -224,7 +205,7 @@ package body SipHash is
          m_pos := m_pos + 8;
       end loop;
 
-      m_i := SArray_to_U64_LE(m(m_pos..m'Last), m'Length);
+      m_i := SArray_Tail_to_U64_LE(m(m_pos..m'Last), m'Length);
       v(3) := v(3) xor m_i;
       for J in 1..c_rounds loop
          SipRound(v);

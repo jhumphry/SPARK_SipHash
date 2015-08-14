@@ -12,8 +12,9 @@ function SipHash.Discrete (m : T_Array) return Hash_Type is
    T_Offset : constant Integer := T'Pos(T'First);
 
    function T_Array_8_to_U64_LE (S : in T_Array_8) return U64 with Inline;
-   function T_Array_to_U64_LE (S : in T_Array; Total_Length : in Natural)
-                               return U64 with Inline, Pre => (S'Length <= 7);
+   function T_Array_Tail_to_U64_LE (S : in T_Array; Total_Length : in Natural)
+                               return U64
+     with Inline, Pre => (S'Length <= 7);
 
    function T_Array_8_to_U64_LE (S : in T_Array_8) return U64 is
      (U64(T'Pos(S(S'First)) - T_Offset)
@@ -25,28 +26,18 @@ function SipHash.Discrete (m : T_Array) return Hash_Type is
       or Shift_Left(U64(T'Pos(S(S'First+6)) - T_Offset), 48)
       or Shift_Left(U64(T'Pos(S(S'First+7)) - T_Offset), 56));
 
-   function T_Array_to_U64_LE (S : in T_Array; Total_Length : in Natural)
+   function T_Array_Tail_to_U64_LE (S : in T_Array; Total_Length : in Natural)
                                return U64 is
       R : U64 := 0;
+      Shift : Natural := 0;
    begin
-      case S'Length is
-         when 0 =>
-            null;
-         when 1..7 =>
-            declare
-               Shift : Natural := 0;
-            begin
-               for I of S loop
-                  R := R or Shift_Left(U64(T'Pos(I) - T_Offset), Shift);
-                  Shift := Shift + 8;
-               end loop;
-            end;
-         when others =>
-            raise Program_Error with "Too many bytes passed...";
-      end case;
+      for I of S loop
+         R := R or Shift_Left(U64(T'Pos(I) - T_Offset), Shift);
+         Shift := Shift + 8;
+      end loop;
       R := R or Shift_Left(U64(Total_Length mod 256), 56);
       return R;
-   end T_Array_to_U64_LE;
+   end T_Array_Tail_to_U64_LE;
 
    m_pos : T_Index := m'First;
    m_i : U64;
@@ -69,7 +60,7 @@ begin
       m_pos := m_pos + 8;
    end loop;
 
-   m_i := T_Array_to_U64_LE(m(m_pos..m'Last), m'Length);
+   m_i := T_Array_Tail_to_U64_LE(m(m_pos..m'Last), m'Length);
    v(3) := v(3) xor m_i;
    for J in 1..c_rounds loop
       SipRound(v);
