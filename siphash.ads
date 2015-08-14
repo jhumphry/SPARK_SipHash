@@ -32,4 +32,24 @@ package SipHash is
    -- original paper. Ada.Storage_IO can be used to turn private objects into
    -- Storage_Array.
 
+private
+
+   use type Interfaces.Unsigned_64;
+
+   -- The state array of the SipHash function
+   type SipHash_State is array (Integer range 0..3) of Interfaces.Unsigned_64;
+
+   -- The initial state from the key passed as generic formal parameters is
+   -- stored here, so that static elaboration followed by a call of SetKey
+   -- can be used in situations where dynamic elaboration might be a problem.
+   initial_v : SipHash_State := (k0 xor 16#736f6d6570736575#,
+                                 k1 xor 16#646f72616e646f6d#,
+                                 k0 xor 16#6c7967656e657261#,
+                                 k1 xor 16#7465646279746573#);
+
+   procedure SipRound (v : in out SipHash_State) with Inline;
+
+   function SipFinalization (v : in out SipHash_State)
+                             return Interfaces.Unsigned_64 with Inline;
+
 end SipHash;

@@ -17,25 +17,12 @@ package body SipHash is
    subtype SArray_8 is System.Storage_Elements.Storage_Array(0..7);
    subtype String_8 is String(1..8);
 
-   -- The state array of the SipHash function
-   type SipHash_State is array (Integer range 0..3) of U64;
-
    function SArray8_to_U64_LE (S : in SArray_8) return U64 with Inline;
    function SArray_to_U64_LE (S : in SArray; Total_Length : in Natural)
                               return U64 with Inline, Pre => (S'Length <= 7);
    function String_8_to_U64_LE (S : in String_8) return U64 with Inline;
    function String_to_U64_LE (S : in String; Total_Length : in Natural)
                               return U64 with Inline, Pre => (S'Length <= 7);
-   procedure SipRound (v : in out SipHash_State) with Inline;
-   function SipFinalization (v : in out SipHash_State) return U64 with Inline;
-
-   -- The initial state from the key passed as generic formal parameters is
-   -- stored here, so that static elaboration followed by a call of SetKey
-   -- can be used in situations where dynamic elaboration might be a problem.
-   initial_v : SipHash_State := (k0 xor 16#736f6d6570736575#,
-                                 k1 xor 16#646f72616e646f6d#,
-                                 k0 xor 16#6c7967656e657261#,
-                                 k1 xor 16#7465646279746573#);
 
    -----------------------
    -- SArray8_to_U64_LE --
@@ -146,7 +133,8 @@ package body SipHash is
    -- SipFinalization --
    ---------------------
 
-   function SipFinalization (v : in out SipHash_State) return U64 is
+   function SipFinalization (v : in out SipHash_State)
+                             return Interfaces.Unsigned_64 is
    begin
       v(2) := v(2) xor 16#ff#;
       for I in 1..d_rounds loop

@@ -11,7 +11,7 @@ use Interfaces;
 
 with System.Storage_Elements;
 
-with SipHash;
+with SipHash, SipHash.Discrete;
 with SipHash24_c;
 
 procedure Test_SipHash is
@@ -21,9 +21,15 @@ procedure Test_SipHash is
    package ACH_IO is new Ada.Text_IO.Modular_IO(Ada.Containers.Hash_Type);
    use ACH_IO;
 
+   package Test_SipHash24 is new SipHash(c_rounds => 2,
+                                         d_rounds => 4);
+   function SipHash24_String is
+     new Test_SipHash24.Discrete(T => Character,
+                                 T_Index => Positive,
+                                 T_Array => String,
+                                 Hash_Type => Ada.Containers.Hash_Type);
+
    -- This matches the test vector setup in the paper.
-   package Test_SipHash is new SipHash(c_rounds => 2,
-                                       d_rounds => 4);
    K : constant System.Storage_Elements.Storage_Array :=
      (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
    M : constant System.Storage_Elements.Storage_Array :=
@@ -52,8 +58,8 @@ begin
            "'SipHash: a fast short-input PRF'");
    Put_Line("by Jean-Philippe Aumasson and Daniel J. Bernstein.");
 
-   Test_SipHash.SetKey(K);
-   Result := Test_SipHash.SipHash(M);
+   Test_SipHash24.SetKey(K);
+   Result := Test_SipHash24.SipHash(M);
    Put("Result received from Ada routine: ");
    Put(Result, Base => 16); New_Line;
 
@@ -69,9 +75,12 @@ begin
    Put(Expected_Result, Base => 16); New_Line;
    New_Line;
 
-   Put_Line("Testing hash of: " & Test_String);
-   Test_String_Result := Test_SipHash.SipHash(Test_String);
+   Put_Line("Testing hash of: '" & Test_String & "'");
+   Test_String_Result := Test_SipHash24.SipHash(Test_String);
    Put("Result received from Ada routine (truncated for use in Ada.Containers): ");
+   Put(Test_String_Result, Base => 16); New_Line;
+   Test_String_Result := SipHash24_String(Test_String);
+   Put("Result received from Ada routine for generic discrete types: ");
    Put(Test_String_Result, Base => 16); New_Line;
 
    Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
