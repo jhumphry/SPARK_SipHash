@@ -41,6 +41,16 @@ private
                                  k0 xor 16#6c7967656e657261#,
                                  k1 xor 16#7465646279746573#);
 
+   subtype SArray is System.Storage_Elements.Storage_Array;
+   subtype SArray_8 is System.Storage_Elements.Storage_Array(0..7);
+
+   function SArray8_to_U64_LE (S : in SArray_8) return Interfaces.Unsigned_64
+     with Inline;
+
+   function SArray_Tail_to_U64_LE (S : in SArray; Total_Length : in Natural)
+                                   return Interfaces.Unsigned_64
+     with Inline, Pre => (S'Length <= 7);
+
    procedure SipRound (v : in out SipHash_State) with Inline;
 
    function SipFinalization (v : in out SipHash_State)

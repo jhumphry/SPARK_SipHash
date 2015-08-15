@@ -13,13 +13,6 @@ package body SipHash is
    -- Short names for fundamental machine types
    subtype U64 is Interfaces.Unsigned_64;
    subtype Storage_Element is System.Storage_Elements.Storage_Element;
-   subtype SArray is System.Storage_Elements.Storage_Array;
-   subtype SArray_8 is System.Storage_Elements.Storage_Array(0..7);
-
-   function SArray8_to_U64_LE (S : in SArray_8) return U64 with Inline;
-   function SArray_Tail_to_U64_LE (S : in SArray; Total_Length : in Natural)
-                                   return U64
-     with Inline, Pre => (S'Length <= 7);
 
    -----------------------
    -- SArray8_to_U64_LE --
