@@ -13,7 +13,7 @@ use Interfaces;
 with System.Storage_Elements;
 use System.Storage_Elements;
 
-with SipHash, SipHash.Discrete, SipHash.General;
+with SipHash24, SipHash24.String_Hash, SipHash.General;
 with SipHash24_c;
 
 procedure Test_SipHash is
@@ -22,14 +22,6 @@ procedure Test_SipHash is
    use U64_IO;
    package ACH_IO is new Ada.Text_IO.Modular_IO(Ada.Containers.Hash_Type);
    use ACH_IO;
-
-   package Test_SipHash24 is new SipHash(c_rounds => 2,
-                                         d_rounds => 4);
-   function SipHash24_String is
-     new Test_SipHash24.Discrete(T => Character,
-                                 T_Index => Positive,
-                                 T_Array => String,
-                                 Hash_Type => Ada.Containers.Hash_Type);
 
    -- This matches the test vector setup in the paper.
    K : constant Storage_Array :=
@@ -60,8 +52,8 @@ procedure Test_SipHash is
       end record;
 
    function SipHash24_Example_Type is
-     new Test_SipHash24.General(T => Example_Type,
-                         Hash_Type => Unsigned_64);
+     new SipHash24.General(T => Example_Type,
+                           Hash_Type => Unsigned_64);
 
    Example_Value : Example_Type := (Flag => True, Counter => 3);
 
@@ -73,10 +65,10 @@ begin
            "'SipHash: a fast short-input PRF'");
    Put_Line("by Jean-Philippe Aumasson and Daniel J. Bernstein.");
 
-   Test_SipHash24.SetKey(K);
+   SipHash24.SetKey(K);
 
    Put("Result received from Ada routine for the test vector: ");
-   Put(Test_SipHash24.SipHash(M), Base => 16); New_Line;
+   Put(SipHash24.SipHash(M), Base => 16); New_Line;
 
    Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
                                       c_in => C_M(0)'Access,
@@ -92,7 +84,7 @@ begin
 
    Put_Line("Testing hash of a string value: '" & Test_String & "'");
    Put("Result received from Ada routine (truncated for use in Ada.Containers): ");
-   Put(SipHash24_String(Test_String), Base => 16); New_Line;
+   Put(SipHash24.String_Hash(Test_String), Base => 16); New_Line;
 
    Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
                                       c_in => SipHash24_c.chars_ptr_to_U8_Access(Test_C_String),
@@ -123,7 +115,7 @@ begin
             M(Storage_Offset(J)) := Storage_Element(J mod 256);
             C_M(J) := Unsigned_8(J mod 256);
          end loop;
-         Result := Test_SipHash24.SipHash(M);
+         Result := SipHash24.SipHash(M);
          Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
                                             c_in => C_M(0)'Access,
                                             inlen => Unsigned_64(I),
