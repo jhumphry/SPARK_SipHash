@@ -34,8 +34,8 @@ package body SipHash is
       R : U64 := 0;
       Shift : Natural := 0;
    begin
-      for I of S loop
-         R := R or Shift_Left(U64(I), Shift);
+      for I in S'Range loop
+         R := R or Shift_Left(U64(S(I)), Shift);
          Shift := Shift + 8;
       end loop;
       R := R or Shift_Left(U64(Total_Length mod 256), 56);
@@ -69,14 +69,15 @@ package body SipHash is
    -- SipFinalization --
    ---------------------
 
-   function SipFinalization (v : in out SipHash_State)
+   function SipFinalization (v : in SipHash_State)
                              return U64 is
+      vv : SipHash_State := v;
    begin
-      v(2) := v(2) xor 16#ff#;
+      vv(2) := vv(2) xor 16#ff#;
       for I in 1..d_rounds loop
-         SipRound(v);
+         SipRound(vv);
       end loop;
-      return (v(0) xor v(1) xor v(2) xor v(3));
+      return (vv(0) xor vv(1) xor vv(2) xor vv(3));
    end SipFinalization;
 
    ------------

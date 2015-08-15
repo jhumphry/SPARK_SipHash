@@ -56,7 +56,7 @@ private
 
    procedure SipRound (v : in out SipHash_State) with Inline;
 
-   function SipFinalization (v : in out SipHash_State)
+   function SipFinalization (v : in SipHash_State)
                              return U64 with Inline;
 
 end SipHash;
