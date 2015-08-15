@@ -51,7 +51,6 @@ procedure Test_SipHash is
    -- Testing use on strings
    Test_String : constant String := "Lorem ipsum dolor sit amet.";
    Test_C_String : C.Strings.chars_ptr := C.Strings.New_String(Test_String);
-   Test_String_Result : Ada.Containers.Hash_Type;
 
    -- Testing use on an example record type.
    type Example_Type is
@@ -75,26 +74,25 @@ begin
    Put_Line("by Jean-Philippe Aumasson and Daniel J. Bernstein.");
 
    Test_SipHash24.SetKey(K);
-   Result := Test_SipHash24.SipHash(M);
-   Put("Result received from Ada routine: ");
-   Put(Result, Base => 16); New_Line;
+
+   Put("Result received from Ada routine for the test vector: ");
+   Put(Test_SipHash24.SipHash(M), Base => 16); New_Line;
 
    Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
                                       c_in => C_M(0)'Access,
                                       inlen => C_M'Length,
                                       k => C_K(0)'Access);
    C_Result := SipHash24_c.U8_Array8_to_U64(C_Output);
-   Put("Result received from reference C routine: ");
+   Put("Result received from reference C routine for the test vector: ");
    Put(C_Result, Base => 16); New_Line;
 
-   Put("Result expected: ");
+   Put("Result expected for the test vector: ");
    Put(Expected_Result, Base => 16); New_Line;
    New_Line;
 
-   Put_Line("Testing hash of: '" & Test_String & "'");
-   Test_String_Result := SipHash24_String(Test_String);
+   Put_Line("Testing hash of a string value: '" & Test_String & "'");
    Put("Result received from Ada routine (truncated for use in Ada.Containers): ");
-   Put(Test_String_Result, Base => 16); New_Line;
+   Put(SipHash24_String(Test_String), Base => 16); New_Line;
 
    Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
                                       c_in => SipHash24_c.chars_ptr_to_U8_Access(Test_C_String),
@@ -107,14 +105,12 @@ begin
    New_Line;
 
    Put_Line("Testing hash of a small record type (Flag => true, Counter => 3).");
-   Result := SipHash24_Example_Type(Example_Value);
    Put("Result received from Ada routine: ");
-   Put(Result, Base => 16); New_Line;
+   Put(SipHash24_Example_Type(Example_Value), Base => 16); New_Line;
    Put_Line("Incrementing counter and re-hashing.");
    Example_Value.Counter := Example_Value.Counter + 1;
-   Result := SipHash24_Example_Type(Example_Value);
    Put("Result received from Ada routine: ");
-   Put(Result, Base => 16); New_Line;
+   Put(SipHash24_Example_Type(Example_Value), Base => 16); New_Line;
    New_Line;
 
    Put_Line("Testing Ada vs C routine for input lengths from 1 to 2000 bytes.");
