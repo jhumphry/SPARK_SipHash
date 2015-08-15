@@ -13,7 +13,7 @@ use Interfaces;
 with System.Storage_Elements;
 use System.Storage_Elements;
 
-with SipHash, SipHash.Discrete;
+with SipHash, SipHash.Discrete, SipHash.General;
 with SipHash24_c;
 
 procedure Test_SipHash is
@@ -52,6 +52,20 @@ procedure Test_SipHash is
    Test_String : constant String := "Lorem ipsum dolor sit amet.";
    Test_C_String : C.Strings.chars_ptr := C.Strings.New_String(Test_String);
    Test_String_Result : Ada.Containers.Hash_Type;
+
+   -- Testing use on an example record type.
+   type Example_Type is
+      record
+         Flag : Boolean;
+         Counter : Natural;
+      end record;
+
+   function SipHash24_Example_Type is
+     new Test_SipHash24.General(T => Example_Type,
+                         Hash_Type => Unsigned_64);
+
+   Example_Value : Example_Type := (Flag => True, Counter => 3);
+
 begin
    Put_Line("Testing SipHash routines.");
    New_Line;
@@ -90,6 +104,17 @@ begin
    Put("Result received from reference C routine: ");
    Put(C_Result, Base => 16); New_Line;
    C.Strings.Free(Test_C_String);
+   New_Line;
+
+   Put_Line("Testing hash of a small record type (Flag => true, Counter => 3).");
+   Result := SipHash24_Example_Type(Example_Value);
+   Put("Result received from Ada routine: ");
+   Put(Result, Base => 16); New_Line;
+   Put_Line("Incrementing counter and re-hashing.");
+   Example_Value.Counter := Example_Value.Counter + 1;
+   Result := SipHash24_Example_Type(Example_Value);
+   Put("Result received from Ada routine: ");
+   Put(Result, Base => 16); New_Line;
    New_Line;
 
    Put_Line("Testing Ada vs C routine for input lengths from 1 to 2000 bytes.");
