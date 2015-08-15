@@ -18,7 +18,8 @@ package SipHash is
    -- SetKey changes the key used by the package to generate hash values. It is
    -- particularly useful if you want to avoid dynamic elaboration.
 
-   procedure SetKey (k : System.Storage_Elements.Storage_Array);
+   procedure SetKey (k : System.Storage_Elements.Storage_Array)
+     with Pre => (k'Length = 16);
    -- SetKey changes the key used by the package to generate hash values. It is
    -- particularly useful if you want to avoid dynamic elaboration.
 

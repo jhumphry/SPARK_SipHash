@@ -94,8 +94,6 @@ package body SipHash is
    procedure SetKey (k : System.Storage_Elements.Storage_Array) is
       k0, k1 : U64;
    begin
-      pragma Assert(Check => k'Length = 16,
-                    Message => "Key must be 16 bytes.");
       k0 := SArray8_to_U64_LE(k(k'First..k'First+7));
       k1 := SArray8_to_U64_LE(k(k'First+8..k'Last));
       SetKey(k0, k1);
