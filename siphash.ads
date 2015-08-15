@@ -10,21 +10,26 @@ generic
    c_rounds, d_rounds : Positive;
    k0 : Interfaces.Unsigned_64 := 16#0706050403020100#;
    k1 : Interfaces.Unsigned_64 := 16#0f0e0d0c0b0a0908#;
-package SipHash is
+package SipHash with
+SPARK_Mode,
+Abstract_State => (State),
+  Initializes => (State)
+is
 
    subtype U64 is Interfaces.Unsigned_64;
 
-   procedure SetKey (k0, k1 : U64);
+   procedure SetKey (k0, k1 : U64)
+     with Global => (Output => State);
    -- SetKey changes the key used by the package to generate hash values. It is
    -- particularly useful if you want to avoid dynamic elaboration.
 
    procedure SetKey (k : System.Storage_Elements.Storage_Array)
-     with Pre => (k'Length = 16);
+     with Pre => (k'Length = 16), Global => (Output => State);
    -- SetKey changes the key used by the package to generate hash values. It is
    -- particularly useful if you want to avoid dynamic elaboration.
 
-   function SipHash (m : System.Storage_Elements.Storage_Array)
-                     return U64;
+   function SipHash (m : System.Storage_Elements.Storage_Array) return U64
+     with Global => (Input => State);
    -- This is the full implementation of SipHash, intended to exactly match the
    -- original paper. Ada.Storage_IO can be used to turn private objects into
    -- Storage_Array.

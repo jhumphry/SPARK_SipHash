@@ -6,7 +6,10 @@
 with System, System.Storage_Elements;
 use all type System.Storage_Elements.Storage_Offset;
 
-package body SipHash is
+package body SipHash with
+SPARK_Mode,
+Refined_State => (State => Initial_State)
+is
 
    -- Short names for fundamental machine types
    subtype Storage_Element is System.Storage_Elements.Storage_Element;
