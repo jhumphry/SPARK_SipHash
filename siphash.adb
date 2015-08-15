@@ -11,6 +11,25 @@ package body SipHash is
    -- Short names for fundamental machine types
    subtype Storage_Element is System.Storage_Elements.Storage_Element;
 
+   -- The initial state from the key passed as generic formal parameters is
+   -- stored here, so that static elaboration followed by a call of SetKey
+   -- can be used in situations where dynamic elaboration might be a problem.
+
+   -- This could really be in the private part of the package, but SPARK GPL
+   -- 2015 doesn't seem to like Part_Of in the private part of a package,
+   -- regardless of what the SPARK RM says...
+   Initial_State : SipHash_State := (k0 xor 16#736f6d6570736575#,
+                                     k1 xor 16#646f72616e646f6d#,
+                                     k0 xor 16#6c7967656e657261#,
+                                     k1 xor 16#7465646279746573#);
+
+   -----------------------
+   -- Get_Initial_State --
+   -----------------------
+
+   function Get_Initial_State return SipHash_State is
+      (Initial_State);
+
    -----------------------
    -- SArray8_to_U64_LE --
    -----------------------

@@ -36,13 +36,8 @@ private
    -- The state array of the SipHash function
    type SipHash_State is array (Integer range 0..3) of U64;
 
-   -- The initial state from the key passed as generic formal parameters is
-   -- stored here, so that static elaboration followed by a call of SetKey
-   -- can be used in situations where dynamic elaboration might be a problem.
-   Initial_State : SipHash_State := (k0 xor 16#736f6d6570736575#,
-                                     k1 xor 16#646f72616e646f6d#,
-                                     k0 xor 16#6c7967656e657261#,
-                                     k1 xor 16#7465646279746573#);
+   function Get_Initial_State return SipHash_State
+     with Inline, Global => (Input => State);
 
    subtype SArray is System.Storage_Elements.Storage_Array;
    subtype SArray_8 is System.Storage_Elements.Storage_Array(0..7);

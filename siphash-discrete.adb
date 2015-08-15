@@ -40,7 +40,7 @@ function SipHash.Discrete (m : T_Array) return Hash_Type is
 
    m_pos : T_Index := m'First;
    m_i : U64;
-   v : SipHash_State := Initial_State;
+   v : SipHash_State := Get_Initial_State;
    w : constant Natural := (m'Length / 8) + 1;
    Result : U64;
 begin
