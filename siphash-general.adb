@@ -22,7 +22,7 @@ function SipHash.General (m : T) return Hash_Type is
 
    m_pos : Storage_Offset := 1;
    m_i : U64;
-   v : SipHash_State := initial_v;
+   v : SipHash_State := Initial_State;
 
 begin
 

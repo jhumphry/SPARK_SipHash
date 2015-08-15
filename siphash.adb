@@ -85,10 +85,10 @@ package body SipHash is
 
    procedure SetKey (k0, k1 : U64) is
    begin
-      initial_v := (k0 xor 16#736f6d6570736575#,
-                    k1 xor 16#646f72616e646f6d#,
-                    k0 xor 16#6c7967656e657261#,
-                    k1 xor 16#7465646279746573#);
+      Initial_State := (k0 xor 16#736f6d6570736575#,
+                        k1 xor 16#646f72616e646f6d#,
+                        k0 xor 16#6c7967656e657261#,
+                        k1 xor 16#7465646279746573#);
    end SetKey;
 
    procedure SetKey (k : System.Storage_Elements.Storage_Array) is
@@ -110,7 +110,7 @@ package body SipHash is
    is
       m_pos : System.Storage_Elements.Storage_Offset := m'First;
       m_i : U64;
-      v : SipHash_State := initial_v;
+      v : SipHash_State := Initial_State;
       w : constant Natural := (m'Length / 8) + 1;
       Result : U64;
    begin
