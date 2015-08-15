@@ -1,7 +1,7 @@
 -- SipHash.General
 -- Implementing SipHash over a general private type
 
-with Ada.Storage_IO, Interfaces, System.Storage_Elements;
+with Ada.Storage_IO, System.Storage_Elements;
 
 -- Rather than simply writing the object into a buffer and calling the main
 -- SipHash routine, this implementation takes advantage of the fact that the
@@ -12,7 +12,6 @@ function SipHash.General (m : T) return Hash_Type is
 
    package T_Storage is new Ada.Storage_IO(Element_Type => T);
 
-   subtype U64 is Interfaces.Unsigned_64;
    use System.Storage_Elements;
 
    Padded_Blocks : constant Storage_Count := ((T_Storage.Buffer_Size / 8) + 1);

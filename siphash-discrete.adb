@@ -6,7 +6,6 @@ use all type Interfaces.Unsigned_64;
 
 function SipHash.Discrete (m : T_Array) return Hash_Type is
 
-   subtype U64 is Interfaces.Unsigned_64;
    subtype T_Array_8 is T_Array(T_Index'First..T_Index'First+7);
 
    T_Offset : constant Integer := T'Pos(T'First);

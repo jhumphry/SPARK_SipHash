@@ -3,15 +3,12 @@
 -- "SipHash: a fast short-input PRF"
 -- by Jean-Philippe Aumasson and Daniel J. Bernstein
 
-with Interfaces;
-use all type Interfaces.Unsigned_64;
 with System, System.Storage_Elements;
 use all type System.Storage_Elements.Storage_Offset;
 
 package body SipHash is
 
    -- Short names for fundamental machine types
-   subtype U64 is Interfaces.Unsigned_64;
    subtype Storage_Element is System.Storage_Elements.Storage_Element;
 
    -----------------------
@@ -73,7 +70,7 @@ package body SipHash is
    ---------------------
 
    function SipFinalization (v : in out SipHash_State)
-                             return Interfaces.Unsigned_64 is
+                             return U64 is
    begin
       v(2) := v(2) xor 16#ff#;
       for I in 1..d_rounds loop
@@ -86,7 +83,7 @@ package body SipHash is
    -- SetKey --
    ------------
 
-   procedure SetKey (k0, k1 : Interfaces.Unsigned_64) is
+   procedure SetKey (k0, k1 : U64) is
    begin
       initial_v := (k0 xor 16#736f6d6570736575#,
                     k1 xor 16#646f72616e646f6d#,
@@ -109,7 +106,7 @@ package body SipHash is
    -------------
 
    function SipHash (m : System.Storage_Elements.Storage_Array)
-      return Interfaces.Unsigned_64
+      return U64
    is
       m_pos : System.Storage_Elements.Storage_Offset := m'First;
       m_i : U64;
