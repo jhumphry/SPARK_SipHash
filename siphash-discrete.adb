@@ -29,9 +29,12 @@ function SipHash.Discrete (m : T_Array) return Hash_Type is
                                return U64 is
       R : U64 := 0;
       Shift : Natural := 0;
+      T_I : T;
    begin
-      for I of S loop
-         R := R or Shift_Left(U64(T'Pos(I) - T_Offset), Shift);
+      for I in 0..S'Length-1 loop
+         pragma Loop_Invariant (Shift = I * 8);
+         T_I := S(S'First + T_Index'Base(I));
+         R := R or Shift_Left(U64(T'Pos(T_I) - T_Offset), Shift);
          Shift := Shift + 8;
       end loop;
       return R;
@@ -49,6 +52,7 @@ begin
                                 "types which fit into one byte.");
 
    for I in 1..w-1 loop
+      pragma Loop_Invariant (m_pos = T_Index'Base(I - 1) * 8);
       m_i := T_Array_8_to_U64_LE(m(m'First + m_pos..m'First + m_pos + 7));
       v(3) := v(3) xor m_i;
       for J in 1..c_rounds loop

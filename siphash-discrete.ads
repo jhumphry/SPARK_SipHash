@@ -9,4 +9,6 @@ generic
    type T_Index is range <>;
    type T_Array is array (T_Index range <>) of T;
    type Hash_Type is mod <>;
-function SipHash.Discrete (m : T_Array) return Hash_Type;
+function SipHash.Discrete (m : T_Array) return Hash_Type
+  with SPARK_Mode,
+  Global => (Input => State);
