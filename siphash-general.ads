@@ -6,4 +6,5 @@
 generic
    type T is private;
    type Hash_Type is mod <>;
-function SipHash.General (m : T) return Hash_Type;
+function SipHash.General (m : T) return Hash_Type
+  with Global => (Input => Initial_Hash_State);

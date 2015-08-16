@@ -31,10 +31,15 @@ begin
 
    T_Storage.Write(Buffer => B(1..T_Storage.Buffer_Size),
                    Item => m);
-   B(T_Storage.Buffer_Size + 1 .. B'Last - 1) := (others => 0);
+
+   if T_Storage.Buffer_Size + 1 < Padded_Buffer_Size then
+      B(T_Storage.Buffer_Size + 1 .. B'Last - 1) := (others => 0);
+   end if;
+
    B(B'Last) := Storage_Element(T_Storage.Buffer_Size mod 256);
 
    for I in 1..Padded_Blocks loop
+      pragma Loop_Invariant (m_pos = (I-1) * 8 + 1);
       m_i := SArray8_to_U64_LE(B(m_pos..m_pos+7));
       v(3) := v(3) xor m_i;
       for J in 1..c_rounds loop
