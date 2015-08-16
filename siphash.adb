@@ -7,7 +7,7 @@ with System;
 
 package body SipHash with
 SPARK_Mode,
-Refined_State => (State => Initial_State)
+Refined_State => (Initial_Hash_State => Initial_State)
 is
 
    -- Short names for fundamental machine types

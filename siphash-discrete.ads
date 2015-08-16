@@ -11,4 +11,4 @@ generic
    type Hash_Type is mod <>;
 function SipHash.Discrete (m : T_Array) return Hash_Type
   with SPARK_Mode,
-  Global => (Input => State);
+  Global => (Input => Initial_Hash_State);

@@ -13,25 +13,25 @@ generic
    k1 : Interfaces.Unsigned_64 := 16#0f0e0d0c0b0a0908#;
 package SipHash with
 SPARK_Mode,
-Abstract_State => (State),
-  Initializes => (State)
+Abstract_State => (Initial_Hash_State),
+  Initializes => (Initial_Hash_State)
 is
 
    subtype U64 is Interfaces.Unsigned_64;
 
    procedure SetKey (k0, k1 : U64)
-     with Global => (Output => State);
+     with Global => (Output => Initial_Hash_State);
    -- SetKey changes the key used by the package to generate hash values. It is
    -- particularly useful if you want to avoid dynamic elaboration.
 
    procedure SetKey (k : System.Storage_Elements.Storage_Array)
-     with Pre => (k'Length = 16), Global => (Output => State);
+     with Pre => (k'Length = 16), Global => (Output => Initial_Hash_State);
    -- SetKey changes the key used by the package to generate hash values. It is
    -- particularly useful if you want to avoid dynamic elaboration.
 
    function SipHash (m : System.Storage_Elements.Storage_Array) return U64
      with Pre => (m'Length < System.Storage_Elements.Storage_Offset'Last),
-     Global => (Input => State);
+     Global => (Input => Initial_Hash_State);
    -- This is the full implementation of SipHash, intended to exactly match
    -- the original paper. The precondition looks odd, but it is because
    -- Storage_Array is defined with an unconstrained index across
@@ -47,7 +47,7 @@ private
    type SipHash_State is array (Integer range 0..3) of U64;
 
    function Get_Initial_State return SipHash_State
-     with Inline, Global => (Input => State);
+     with Inline, Global => (Input => Initial_Hash_State);
 
    subtype SArray is System.Storage_Elements.Storage_Array;
    subtype SArray_8 is System.Storage_Elements.Storage_Array(0..7);
