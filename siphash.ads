@@ -5,6 +5,7 @@
 
 with Interfaces;
 with System.Storage_Elements;
+use type System.Storage_Elements.Storage_Offset;
 
 generic
    c_rounds, d_rounds : Positive;
@@ -29,10 +30,14 @@ is
    -- particularly useful if you want to avoid dynamic elaboration.
 
    function SipHash (m : System.Storage_Elements.Storage_Array) return U64
-     with Global => (Input => State);
-   -- This is the full implementation of SipHash, intended to exactly match the
-   -- original paper. Ada.Storage_IO can be used to turn private objects into
-   -- Storage_Array.
+     with Pre => (m'Length < System.Storage_Elements.Storage_Offset'Last),
+     Global => (Input => State);
+   -- This is the full implementation of SipHash, intended to exactly match
+   -- the original paper. The precondition looks odd, but it is because
+   -- Storage_Array is defined with an unconstrained index across
+   -- Storage_Offset, which is a signed value. This means that an array from
+   -- Storage_Offset'First to Storage_Offset'Last would have too long a length
+   -- for calculations to be done in a Storage_Offset variable.
 
 private
 
@@ -50,9 +55,9 @@ private
    function SArray8_to_U64_LE (S : in SArray_8) return U64
      with Inline;
 
-   function SArray_Tail_to_U64_LE (S : in SArray; Total_Length : in Natural)
+   function SArray_Tail_to_U64_LE (S : in SArray)
                                    return U64
-     with Inline, Pre => (S'Length <= 7);
+     with Inline, Pre => (S'Length <= 7 and then S'Length > 0);
 
    procedure SipRound (v : in out SipHash_State) with Inline;
 

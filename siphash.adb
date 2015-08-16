@@ -3,8 +3,7 @@
 -- "SipHash: a fast short-input PRF"
 -- by Jean-Philippe Aumasson and Daniel J. Bernstein
 
-with System, System.Storage_Elements;
-use all type System.Storage_Elements.Storage_Offset;
+with System;
 
 package body SipHash with
 SPARK_Mode,
@@ -13,6 +12,7 @@ is
 
    -- Short names for fundamental machine types
    subtype Storage_Element is System.Storage_Elements.Storage_Element;
+   subtype Storage_Offset is System.Storage_Elements.Storage_Offset;
 
    -- The initial state from the key passed as generic formal parameters is
    -- stored here, so that static elaboration followed by a call of SetKey
@@ -51,16 +51,16 @@ is
    -- SArray_to_U64_LE --
    ----------------------
 
-   function SArray_Tail_to_U64_LE (S : in SArray; Total_Length : in Natural)
+   function SArray_Tail_to_U64_LE (S : in SArray)
                               return U64 is
       R : U64 := 0;
       Shift : Natural := 0;
    begin
-      for I in S'Range loop
-         R := R or Shift_Left(U64(S(I)), Shift);
+      for I in 0..(S'Length-1) loop
+         pragma Loop_Invariant (Shift = I * 8);
+         R := R or Shift_Left(U64(S(S'First + Storage_Offset(I))), Shift);
          Shift := Shift + 8;
       end loop;
-      R := R or Shift_Left(U64(Total_Length mod 256), 56);
       return R;
    end SArray_Tail_to_U64_LE;
 
@@ -129,10 +129,10 @@ is
    function SipHash (m : System.Storage_Elements.Storage_Array)
       return U64
    is
-      m_pos : System.Storage_Elements.Storage_Offset := m'First;
+      m_pos : Storage_Offset := 0;
       m_i : U64;
       v : SipHash_State := Initial_State;
-      w : constant Natural := (m'Length / 8) + 1;
+      w : constant Storage_Offset := (m'Length / 8) + 1;
       Result : U64;
    begin
       pragma Assert (Check => Storage_Element'Size = 8,
@@ -140,7 +140,8 @@ is
                        "with Storage_Element'Size /= 8.");
 
       for I in 1..w-1 loop
-         m_i := SArray8_to_U64_LE(m(m_pos..m_pos+7));
+         pragma Loop_Invariant (m_pos = (I - 1) * 8);
+         m_i := SArray8_to_U64_LE(m(m'First + m_pos..m'First + m_pos + 7));
          v(3) := v(3) xor m_i;
          for J in 1..c_rounds loop
             SipRound(v);
@@ -149,7 +150,13 @@ is
          m_pos := m_pos + 8;
       end loop;
 
-      m_i := SArray_Tail_to_U64_LE(m(m_pos..m'Last), m'Length);
+      if m_pos < m'Length then
+         m_i := SArray_Tail_to_U64_LE(m(m'First + m_pos .. m'Last));
+      else
+         m_i := 0;
+      end if;
+      m_i := m_i or Shift_Left(U64(m'Length mod 256), 56);
+
       v(3) := v(3) xor m_i;
       for J in 1..c_rounds loop
          SipRound(v);
