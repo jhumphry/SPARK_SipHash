@@ -44,7 +44,7 @@ function SipHash.Discrete (m : T_Array) return Hash_Type is
    m_i : U64;
    v : SipHash_State := Get_Initial_State;
    w : constant Natural := (m'Length / 8) + 1;
-   Result : U64;
+
 begin
 
    pragma Compile_Time_Error (((T'Pos(T'Last) - T_Offset) >= 256),
@@ -75,6 +75,5 @@ begin
    end loop;
    v(0) := v(0) xor m_i;
 
-   Result := SipFinalization(v);
-   return Hash_Type'Mod(Result);
+   return Hash_Type'Mod(SipFinalization(v));
 end SipHash.Discrete;

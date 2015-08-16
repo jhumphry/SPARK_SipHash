@@ -132,7 +132,7 @@ is
       m_i : U64;
       v : SipHash_State := Initial_State;
       w : constant Storage_Offset := (m'Length / 8) + 1;
-      Result : U64;
+
    begin
 
       pragma Compile_Time_Error (System.Storage_Elements.Storage_Element'Size /= 8,
@@ -163,8 +163,7 @@ is
       end loop;
       v(0) := v(0) xor m_i;
 
-      Result := SipFinalization(v);
-      return Result;
+      return SipFinalization(v);
    end SipHash;
 
 end SipHash;

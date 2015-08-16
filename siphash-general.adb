@@ -18,7 +18,6 @@ function SipHash.General (m : T) return Hash_Type is
    Padded_Buffer_Size : constant Storage_Count := Padded_Blocks * 8;
 
    B : Storage_Array(1..Padded_Buffer_Size);
-   Result : U64;
 
    m_pos : Storage_Offset := 1;
    m_i : U64;
@@ -45,7 +44,5 @@ begin
       m_pos := m_pos + 8;
    end loop;
 
-   Result := SipFinalization(v);
-
-   return Hash_Type'Mod(Result);
+   return Hash_Type'Mod(SipFinalization(v));
 end SipHash.General;
