@@ -26,9 +26,9 @@ function SipHash.General (m : T) return Hash_Type is
 
 begin
 
-   pragma Assert (Check => Storage_Element'Size = 8,
-                  Message => "This implementation of SipHash cannot work " &
-                    "with Storage_Element'Size /= 8.");
+   pragma Compile_Time_Error (Storage_Element'Size /= 8,
+                              "This implementation of SipHash cannot work " &
+                                "with Storage_Element'Size /= 8.");
 
    T_Storage.Write(Buffer => B(1..T_Storage.Buffer_Size),
                    Item => m);

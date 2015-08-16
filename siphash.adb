@@ -11,7 +11,6 @@ Refined_State => (State => Initial_State)
 is
 
    -- Short names for fundamental machine types
-   subtype Storage_Element is System.Storage_Elements.Storage_Element;
    subtype Storage_Offset is System.Storage_Elements.Storage_Offset;
 
    -- The initial state from the key passed as generic formal parameters is
@@ -135,9 +134,10 @@ is
       w : constant Storage_Offset := (m'Length / 8) + 1;
       Result : U64;
    begin
-      pragma Assert (Check => Storage_Element'Size = 8,
-                     Message => "This implementation of SipHash cannot work " &
-                       "with Storage_Element'Size /= 8.");
+
+      pragma Compile_Time_Error (System.Storage_Elements.Storage_Element'Size /= 8,
+                                 "This implementation of SipHash cannot work " &
+                                   "with Storage_Element'Size /= 8.");
 
       for I in 1..w-1 loop
          pragma Loop_Invariant (m_pos = (I - 1) * 8);

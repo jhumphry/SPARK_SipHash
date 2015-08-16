@@ -44,9 +44,9 @@ function SipHash.Discrete (m : T_Array) return Hash_Type is
    Result : U64;
 begin
 
-   pragma Assert(Check => ((T'Pos(T'Last) - T_Offset) < 256),
-                 Message => "SipHash.Discrete only works for discrete types " &
-                   "which fit into one byte.");
+   pragma Compile_Time_Error (((T'Pos(T'Last) - T_Offset) >= 256),
+                              "SipHash.Discrete only works for discrete " &
+                                "types which fit into one byte.");
 
    for I in 1..w-1 loop
       m_i := T_Array_8_to_U64_LE(m(m'First + m_pos..m'First + m_pos + 7));
