@@ -1,21 +1,14 @@
--- SipHash.General
+-- SipHash.General_SPARK
 -- Implementing SipHash over a general private type
 
-with Ada.Storage_IO, System.Storage_Elements;
+with System.Storage_Elements;
 
 -- Rather than simply writing the object into a buffer and calling the main
 -- SipHash routine, this implementation takes advantage of the fact that the
 -- padding required is always constant and does not need to be recalculated
 -- each time, giving a minor speed increase.
 
-function SipHash.General (m : T) return Hash_Type is
-
-   package T_Storage is new Ada.Storage_IO(Element_Type => T);
-   Buffer_Size : System.Storage_Elements.Storage_Offset
-   renames T_Storage.Buffer_Size;
-
-   procedure Write (Buffer : out T_Storage.Buffer_Type; Item : T) renames
-     T_Storage.Write;
+function SipHash.General_SPARK (m : T) return Hash_Type is
 
    use System.Storage_Elements;
 
@@ -51,4 +44,4 @@ begin
    end loop;
 
    return Hash_Type'Mod(SipFinalization(v));
-end SipHash.General;
+end SipHash.General_SPARK;
