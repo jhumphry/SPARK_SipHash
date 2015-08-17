@@ -7,14 +7,14 @@ with Ada.Containers, Ada.Containers.Indefinite_Hashed_Maps;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with SipHash24, SipHash24.String_Hash, SipHash24.System_Entropy;
+with SipHash24, SipHash24_String_Hashing, SipHash24.System_Entropy;
 
 procedure Example_Hashed_Maps is
 
    package Maps is
      new Ada.Containers.Indefinite_Hashed_Maps(Key_Type        => String,
                                                Element_Type    => String,
-                                               Hash            => SipHash24.String_Hash,
+                                               Hash            => SipHash24_String_Hashing.String_Hash,
                                                Equivalent_Keys => "=",
                                                "="             => "=");
 

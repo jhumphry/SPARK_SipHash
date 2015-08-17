@@ -1,31 +1,27 @@
--- SipHash.Discrete
--- Implementing SipHash over a generic (relatively small) discrete type
+-- SipHash.Wide_Discrete
+-- Implementing SipHash over a generic discrete type
 
 -- Copyright (c) 2015, James Humphry - see LICENSE file for details
 
 with Interfaces;
 use all type Interfaces.Unsigned_64;
 
-function SipHash.Discrete (m : T_Array) return Hash_Type is
+function SipHash.Wide_Discrete (m : T_Array) return Hash_Type is
 
-   subtype T_Array_8 is T_Array(T_Index'First..T_Index'First+7);
+   subtype T_Array_4 is T_Array(T_Index'First..T_Index'First+3);
 
    T_Offset : constant Integer := T'Pos(T'First);
 
-   function T_Array_8_to_U64_LE (S : in T_Array_8) return U64 with Inline;
+   function T_Array_4_to_U64_LE (S : in T_Array_4) return U64 with Inline;
    function T_Array_Tail_to_U64_LE (S : in T_Array)
                                return U64
-     with Inline, Pre => (S'Length <= 7 and then S'Length > 0);
+     with Inline, Pre => (S'Length <= 3 and then S'Length > 0);
 
-   function T_Array_8_to_U64_LE (S : in T_Array_8) return U64 is
+   function T_Array_4_to_U64_LE (S : in T_Array_4) return U64 is
      (U64(T'Pos(S(S'First)) - T_Offset)
-      or Shift_Left(U64(T'Pos(S(S'First+1)) - T_Offset), 8)
-      or Shift_Left(U64(T'Pos(S(S'First+2)) - T_Offset), 16)
-      or Shift_Left(U64(T'Pos(S(S'First+3)) - T_Offset), 24)
-      or Shift_Left(U64(T'Pos(S(S'First+4)) - T_Offset), 32)
-      or Shift_Left(U64(T'Pos(S(S'First+5)) - T_Offset), 40)
-      or Shift_Left(U64(T'Pos(S(S'First+6)) - T_Offset), 48)
-      or Shift_Left(U64(T'Pos(S(S'First+7)) - T_Offset), 56));
+      or Shift_Left(U64(T'Pos(S(S'First+1)) - T_Offset), 16)
+      or Shift_Left(U64(T'Pos(S(S'First+2)) - T_Offset), 32)
+      or Shift_Left(U64(T'Pos(S(S'First+3)) - T_Offset), 48));
 
    function T_Array_Tail_to_U64_LE (S : in T_Array)
                                return U64 is
@@ -34,10 +30,10 @@ function SipHash.Discrete (m : T_Array) return Hash_Type is
       T_I : T;
    begin
       for I in 0..S'Length-1 loop
-         pragma Loop_Invariant (Shift = I * 8);
+         pragma Loop_Invariant (Shift = I * 16);
          T_I := S(S'First + T_Index'Base(I));
          R := R or Shift_Left(U64(T'Pos(T_I) - T_Offset), Shift);
-         Shift := Shift + 8;
+         Shift := Shift + 16;
       end loop;
       return R;
    end T_Array_Tail_to_U64_LE;
@@ -45,23 +41,23 @@ function SipHash.Discrete (m : T_Array) return Hash_Type is
    m_pos : T_Index'Base := 0;
    m_i : U64;
    v : SipHash_State := Get_Initial_State;
-   w : constant Natural := (m'Length / 8) + 1;
+   w : constant Natural := (m'Length / 4) + 1;
 
 begin
 
-   pragma Compile_Time_Error ((T'Size > 8),
+   pragma Compile_Time_Error ((T'Size > 16),
                               "SipHash.Discrete only works for discrete " &
-                                "types which fit into one byte.");
+                                "types which fit into two bytes.");
 
    for I in 1..w-1 loop
-      pragma Loop_Invariant (m_pos = T_Index'Base(I - 1) * 8);
-      m_i := T_Array_8_to_U64_LE(m(m'First + m_pos..m'First + m_pos + 7));
+      pragma Loop_Invariant (m_pos = T_Index'Base(I - 1) * 4);
+      m_i := T_Array_4_to_U64_LE(m(m'First + m_pos..m'First + m_pos + 3));
       v(3) := v(3) xor m_i;
       for J in 1..c_rounds loop
          SipRound(v);
       end loop;
       v(0) := v(0) xor m_i;
-      m_pos := m_pos + 8;
+      m_pos := m_pos + 4;
    end loop;
 
    if m_pos < m'Length then
@@ -78,4 +74,4 @@ begin
    v(0) := v(0) xor m_i;
 
    return Hash_Type'Mod(SipFinalization(v));
-end SipHash.Discrete;
+end SipHash.Wide_Discrete;

@@ -15,7 +15,7 @@ use Interfaces;
 with System.Storage_Elements;
 use System.Storage_Elements;
 
-with SipHash24, SipHash24.String_Hash, SipHash.General;
+with SipHash24, SipHash24_String_Hashing, SipHash.General;
 with SipHash24_c;
 
 procedure Test_SipHash is
@@ -86,7 +86,7 @@ begin
 
    Put_Line("Testing hash of a string value: '" & Test_String & "'");
    Put("Result received from Ada routine (truncated for use in Ada.Containers): ");
-   Put(SipHash24.String_Hash(Test_String), Base => 16); New_Line;
+   Put(SipHash24_String_Hashing.String_Hash(Test_String), Base => 16); New_Line;
 
    Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
                                       c_in => SipHash24_c.chars_ptr_to_U8_Access(Test_C_String),
