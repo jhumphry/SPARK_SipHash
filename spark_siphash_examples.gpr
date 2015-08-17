@@ -13,7 +13,7 @@ project SPARK_SipHash_Examples is
    for Exec_Dir use "exec/";
    for Main use ("test_siphash.adb", "example_hashed_maps.adb");
    for Languages use ("Ada", "C");
-   for Source_Dirs use ("tests");
+   for Source_Dirs use ("src/tests/");
 
    package Ide is
       for Vcs_Kind use "Git";
