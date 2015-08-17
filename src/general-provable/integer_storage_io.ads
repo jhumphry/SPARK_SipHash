@@ -2,6 +2,8 @@
 -- A re-implementation of Storage_IO for Integers with SPARK_Mode turned on in
 -- the specification and off in the body.
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 with System.Storage_Elements;
 
 package Integer_Storage_IO

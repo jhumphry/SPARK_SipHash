@@ -3,6 +3,8 @@
 -- "SipHash: a fast short-input PRF"
 -- by Jean-Philippe Aumasson and Daniel J. Bernstein
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 with Interfaces;
 with System.Storage_Elements;
 use type System.Storage_Elements.Storage_Offset;

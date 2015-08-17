@@ -1,6 +1,8 @@
 -- SipHash.General_SPARK
 -- Implementing SipHash over a general private type
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 with Integer_Storage_IO;
 
 -- This generic function will calculate SipHash for any private type of definite

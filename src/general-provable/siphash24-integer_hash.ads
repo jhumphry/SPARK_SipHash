@@ -2,6 +2,8 @@
 -- An instantiation of SipHash for the Integer type. Not much use other than as
 -- a base for running gnatprove
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 pragma Spark_Mode;
 
 with Ada.Containers;

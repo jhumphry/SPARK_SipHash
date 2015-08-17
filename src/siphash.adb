@@ -3,6 +3,8 @@
 -- "SipHash: a fast short-input PRF"
 -- by Jean-Philippe Aumasson and Daniel J. Bernstein
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 with System;
 
 package body SipHash with

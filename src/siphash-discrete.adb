@@ -1,6 +1,8 @@
 -- SipHash.Discrete
 -- Implementing SipHash over a generic discrete type
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 with Interfaces;
 use all type Interfaces.Unsigned_64;
 

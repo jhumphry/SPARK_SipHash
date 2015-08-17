@@ -1,6 +1,8 @@
 -- SipHash.Discrete
 -- Implementing SipHash over a generic discrete type
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 -- This generic function will calculate SipHash over arrays of a discrete type
 -- indexed by an integer type, such as the standard String type. The range of
 -- values of the discrete type needs to fit in 8 bits.

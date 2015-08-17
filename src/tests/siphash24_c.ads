@@ -1,6 +1,8 @@
 -- SipHash24_C
 -- an Ada specification for the reference C implementation of SipHash
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 with Ada.Unchecked_Conversion;
 
 with Interfaces, Interfaces.C, Interfaces.C.Strings;

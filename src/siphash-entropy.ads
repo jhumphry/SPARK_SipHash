@@ -3,6 +3,8 @@
 -- system. There are various different implementations of this that are selected
 -- at compile-time.
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 generic
 package SipHash.Entropy is
 

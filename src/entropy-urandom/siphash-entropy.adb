@@ -3,6 +3,8 @@
 -- system.
 -- This implementation loads bytes from /dev/urandom on Linux/Unix-like systems.
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 with Ada.Streams, Ada.Streams.Stream_IO;
 use Ada.Streams;
 with System.Storage_Elements;

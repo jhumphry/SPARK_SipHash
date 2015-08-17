@@ -1,6 +1,8 @@
 -- Example_Hashed_Maps
 -- An example of using SipHash with the Ada.Containers.Indefinite_Hashed_Maps
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 with Ada.Containers, Ada.Containers.Indefinite_Hashed_Maps;
 
 with Ada.Text_IO; use Ada.Text_IO;

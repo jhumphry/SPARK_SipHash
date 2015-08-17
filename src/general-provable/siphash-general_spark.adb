@@ -1,6 +1,8 @@
 -- SipHash.General_SPARK
 -- Implementing SipHash over a general private type
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 with System.Storage_Elements;
 
 -- Rather than simply writing the object into a buffer and calling the main

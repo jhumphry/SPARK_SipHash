@@ -3,6 +3,8 @@
 -- system.
 -- This implementation is for systems where no entropy is available.
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 package body SipHash.Entropy is
 
    function System_Entropy_Available return Boolean is

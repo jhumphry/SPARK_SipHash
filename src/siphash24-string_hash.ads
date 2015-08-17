@@ -4,6 +4,8 @@
 -- The key must be set with SetKey before use, or there will be no protection
 -- from hash flooding attacks.
 
+-- Copyright (c) 2015, James Humphry - see LICENSE file for details
+
 pragma Spark_Mode;
 
 with Ada.Containers;
