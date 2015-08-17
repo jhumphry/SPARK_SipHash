@@ -19,12 +19,14 @@ is
 
    subtype U64 is Interfaces.Unsigned_64;
 
+   subtype SipHash_Key is System.Storage_Elements.Storage_Array(1..16);
+
    procedure SetKey (k0, k1 : U64)
      with Global => (Output => Initial_Hash_State);
    -- SetKey changes the key used by the package to generate hash values. It is
    -- particularly useful if you want to avoid dynamic elaboration.
 
-   procedure SetKey (k : System.Storage_Elements.Storage_Array)
+   procedure SetKey (k : SipHash_Key)
      with Pre => (k'Length = 16), Global => (Output => Initial_Hash_State);
    -- SetKey changes the key used by the package to generate hash values. It is
    -- particularly useful if you want to avoid dynamic elaboration.

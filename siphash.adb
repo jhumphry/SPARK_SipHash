@@ -113,7 +113,7 @@ is
                         k1 xor 16#7465646279746573#);
    end SetKey;
 
-   procedure SetKey (k : System.Storage_Elements.Storage_Array) is
+   procedure SetKey (k : SipHash_Key) is
       k0, k1 : U64;
    begin
       k0 := SArray8_to_U64_LE(k(k'First..k'First+7));
