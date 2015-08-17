@@ -5,7 +5,7 @@ with Ada.Containers, Ada.Containers.Indefinite_Hashed_Maps;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with SipHash24, SipHash24.String_Hash;
+with SipHash24, SipHash24.String_Hash, SipHash24.System_Entropy;
 
 procedure Example_Hashed_Maps is
 
@@ -25,10 +25,15 @@ begin
    Put_Line("An example of using SipHash with Ada.Containers.Indefinite_Hashed_Maps");
    New_Line;
 
-   -- The key should be set randomly at this point rather than using the default
-   -- but we will skip this set for now. Note that with the default key, there
-   -- is no additional hash flooding protection from using SipHash over the
-   -- implementation default.
+   if SipHash24.System_Entropy.System_Entropy_Available then
+      Put_Line("Setting SipHash key from system entropy source.");
+      SipHash24.System_Entropy.Set_Key_From_System_Entropy;
+   else
+      Put_Line("No system entropy available to set SipHash key. Note that " &
+                 "this undermines the hash flooding protection supposed to "&
+                 "be provided by SipHash.");
+   end if;
+   New_Line;
 
    Put_Line("Adding keys foo -> bar, cat -> dog, alice -> bob, England -> London.");
    Example_Map.Insert("foo", "bar");
