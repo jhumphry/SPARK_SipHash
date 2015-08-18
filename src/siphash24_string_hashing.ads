@@ -8,8 +8,8 @@
 
 pragma Spark_Mode;
 
-with Ada.Characters.Handling, Ada.Wide_Characters.Handling;
-with Ada.Wide_Wide_Characters.Handling, Ada.Containers;
+with Ada.Containers;
+with Ada.Strings.UTF_Encoding; use Ada.Strings.UTF_Encoding;
 
 with SipHash24;
 with SipHash.Discrete, SipHash.Wide_Discrete, SipHash.Wide_Wide_Discrete;
@@ -28,9 +28,7 @@ package SipHash24_String_Hashing is
 
    function String_Hash_Case_Insensitive (Key : String)
                                           return Ada.Containers.Hash_Type
-   is
-     (String_Hash(Ada.Characters.Handling.To_Lower(Key)))
-   with Inline;
+     with Inline;
 
    function Wide_String_Hash is
      new SipHash24.Wide_Discrete(T => Wide_Character,
@@ -40,9 +38,7 @@ package SipHash24_String_Hashing is
 
    function Wide_String_Hash_Case_Insensitive (Key : Wide_String)
                                                return Ada.Containers.Hash_Type
-   is
-     (Wide_String_Hash(Ada.Wide_Characters.Handling.To_Lower(Key)))
-   with Inline;
+     with Inline;
 
    function Wide_Wide_String_Hash is
      new SipHash24.Wide_Wide_Discrete(T => Wide_Wide_Character,
@@ -52,8 +48,14 @@ package SipHash24_String_Hashing is
 
    function Wide_Wide_String_Hash_Case_Insensitive (Key : Wide_Wide_String)
                                                     return Ada.Containers.Hash_Type
-   is
-     (Wide_Wide_String_Hash(Ada.Wide_Wide_Characters.Handling.To_Lower(Key)))
-   with Inline;
+     with Inline;
+
+   function UTF_8_String_Hash (Key : UTF_8_String)
+                               return Ada.Containers.Hash_Type
+                               renames String_Hash;
+
+   function UTF_8_String_Hash_Case_Insensitive (Key : UTF_8_String)
+                                                return Ada.Containers.Hash_Type
+     with Inline;
 
 end SipHash24_String_Hashing;
