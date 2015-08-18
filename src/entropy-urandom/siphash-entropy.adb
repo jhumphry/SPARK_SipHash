@@ -10,7 +10,9 @@ use Ada.Streams;
 with System.Storage_Elements;
 use System.Storage_Elements;
 
-package body SipHash.Entropy is
+package body SipHash.Entropy
+with SPARK_Mode => Off
+is
 
    pragma Compile_Time_Error (Storage_Element'Size > Stream_Element'Size,
                               "Cannot read entropy from /dev/urandom due to "&

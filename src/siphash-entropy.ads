@@ -6,7 +6,9 @@
 -- Copyright (c) 2015, James Humphry - see LICENSE file for details
 
 generic
-package SipHash.Entropy is
+package SipHash.Entropy
+with SPARK_Mode => On
+is
 
    Entropy_Unavailable : exception;
 
@@ -20,6 +22,7 @@ package SipHash.Entropy is
    -- This procedure will set the SipHash key from a system entropy source,
    -- unless System_Entropy_Available is False, in which case it will raise
    -- No_Entropy_Available.
-   procedure Set_Key_From_System_Entropy;
+   procedure Set_Key_From_System_Entropy
+   with Global => (Output => Initial_Hash_State);
 
 end SipHash.Entropy;

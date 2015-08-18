@@ -5,7 +5,9 @@
 
 -- Copyright (c) 2015, James Humphry - see LICENSE file for details
 
-package body SipHash.Entropy is
+package body SipHash.Entropy
+with SPARK_Mode => Off
+is
 
    function System_Entropy_Available return Boolean is
      (False);

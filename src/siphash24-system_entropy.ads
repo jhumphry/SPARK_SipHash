@@ -4,8 +4,10 @@
 
 -- Copyright (c) 2015, James Humphry - see LICENSE file for details
 
-pragma Spark_Mode (Off);
+pragma Spark_Mode (On);
 
 with SipHash.Entropy;
+
+pragma Elaborate_All(SipHash.Entropy);
 
 package SipHash24.System_Entropy is new SipHash24.Entropy;
