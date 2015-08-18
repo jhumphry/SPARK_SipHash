@@ -23,12 +23,12 @@ is
 
    subtype SipHash_Key is System.Storage_Elements.Storage_Array(1..16);
 
-   procedure SetKey (k0, k1 : U64)
+   procedure Set_Key (k0, k1 : U64)
      with Global => (Output => Initial_Hash_State);
    -- SetKey changes the key used by the package to generate hash values. It is
    -- particularly useful if you want to avoid dynamic elaboration.
 
-   procedure SetKey (k : SipHash_Key)
+   procedure Set_Key (k : SipHash_Key)
      with Pre => (k'Length = 16), Global => (Output => Initial_Hash_State);
    -- SetKey changes the key used by the package to generate hash values. It is
    -- particularly useful if you want to avoid dynamic elaboration.
@@ -63,9 +63,9 @@ private
                                    return U64
      with Inline, Pre => (S'Length <= 7 and then S'Length > 0);
 
-   procedure SipRound (v : in out SipHash_State) with Inline;
+   procedure Sip_Round (v : in out SipHash_State) with Inline;
 
-   function SipFinalization (v : in SipHash_State)
+   function Sip_Finalization (v : in SipHash_State)
                              return U64 with Inline;
 
 end SipHash;

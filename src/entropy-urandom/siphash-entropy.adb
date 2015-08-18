@@ -53,7 +53,7 @@ is
          Key(I) := Storage_Element'Mod(Buffer(Stream_Element_Offset(I)));
       end loop;
 
-      SetKey(Key);
+      Set_Key(Key);
 
    end Set_Key_From_System_Entropy;
 

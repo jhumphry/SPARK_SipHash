@@ -58,7 +58,7 @@ begin
       m_i := T_Array_8_to_U64_LE(m(m'First + m_pos..m'First + m_pos + 7));
       v(3) := v(3) xor m_i;
       for J in 1..c_rounds loop
-         SipRound(v);
+         Sip_Round(v);
       end loop;
       v(0) := v(0) xor m_i;
       m_pos := m_pos + 8;
@@ -73,9 +73,9 @@ begin
 
    v(3) := v(3) xor m_i;
    for J in 1..c_rounds loop
-      SipRound(v);
+      Sip_Round(v);
    end loop;
    v(0) := v(0) xor m_i;
 
-   return Hash_Type'Mod(SipFinalization(v));
+   return Hash_Type'Mod(Sip_Finalization(v));
 end SipHash.Discrete;

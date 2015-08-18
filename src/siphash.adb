@@ -69,7 +69,7 @@ is
    -- SipRound --
    --------------
 
-   procedure SipRound (v : in out SipHash_State) is
+   procedure Sip_Round (v : in out SipHash_State) is
    begin
       v(0) := v(0) + v(1);
       v(2) := v(2) + v(3);
@@ -86,42 +86,42 @@ is
       v(1) := v(1) xor v(2);
       v(3) := v(3) xor v(0);
       v(2) := Rotate_Left(v(2), 32);
-   end SipRound;
+   end Sip_Round;
 
    ---------------------
    -- SipFinalization --
    ---------------------
 
-   function SipFinalization (v : in SipHash_State)
+   function Sip_Finalization (v : in SipHash_State)
                              return U64 is
       vv : SipHash_State := v;
    begin
       vv(2) := vv(2) xor 16#ff#;
       for I in 1..d_rounds loop
-         SipRound(vv);
+         Sip_Round(vv);
       end loop;
       return (vv(0) xor vv(1) xor vv(2) xor vv(3));
-   end SipFinalization;
+   end Sip_Finalization;
 
    ------------
    -- SetKey --
    ------------
 
-   procedure SetKey (k0, k1 : U64) is
+   procedure Set_Key (k0, k1 : U64) is
    begin
       Initial_State := (k0 xor 16#736f6d6570736575#,
                         k1 xor 16#646f72616e646f6d#,
                         k0 xor 16#6c7967656e657261#,
                         k1 xor 16#7465646279746573#);
-   end SetKey;
+   end Set_Key;
 
-   procedure SetKey (k : SipHash_Key) is
+   procedure Set_Key (k : SipHash_Key) is
       k0, k1 : U64;
    begin
       k0 := SArray8_to_U64_LE(k(k'First..k'First+7));
       k1 := SArray8_to_U64_LE(k(k'First+8..k'Last));
-      SetKey(k0, k1);
-   end SetKey;
+      Set_Key(k0, k1);
+   end Set_Key;
 
    -------------
    -- SipHash --
@@ -146,7 +146,7 @@ is
          m_i := SArray8_to_U64_LE(m(m'First + m_pos..m'First + m_pos + 7));
          v(3) := v(3) xor m_i;
          for J in 1..c_rounds loop
-            SipRound(v);
+            Sip_Round(v);
          end loop;
          v(0) := v(0) xor m_i;
          m_pos := m_pos + 8;
@@ -161,11 +161,11 @@ is
 
       v(3) := v(3) xor m_i;
       for J in 1..c_rounds loop
-         SipRound(v);
+         Sip_Round(v);
       end loop;
       v(0) := v(0) xor m_i;
 
-      return SipFinalization(v);
+      return Sip_Finalization(v);
    end SipHash;
 
 end SipHash;

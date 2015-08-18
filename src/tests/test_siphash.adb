@@ -67,7 +67,7 @@ begin
            "'SipHash: a fast short-input PRF'");
    Put_Line("by Jean-Philippe Aumasson and Daniel J. Bernstein.");
 
-   SipHash24.SetKey(K);
+   SipHash24.Set_Key(K);
 
    Put("Result received from Ada routine for the test vector: ");
    Put(SipHash24.SipHash(M), Base => 16); New_Line;
