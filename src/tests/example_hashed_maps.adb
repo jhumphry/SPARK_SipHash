@@ -7,7 +7,8 @@ with Ada.Containers, Ada.Containers.Indefinite_Hashed_Maps;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with Ada.Strings.UTF_Encoding;
+with Ada.Wide_Wide_Characters.Handling;
+with Ada.Strings.UTF_Encoding, Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
 use Ada.Strings.UTF_Encoding;
 
 with SipHash24, SipHash24_String_Hashing, SipHash24.System_Entropy;
@@ -21,17 +22,31 @@ procedure Example_Hashed_Maps is
                                                Equivalent_Keys => "=",
                                                "="             => "=");
 
-   package UTF8_Maps is
+   -- This function should really be in the standard library
+   function UTF_8_CI_Equal (Left, Right : UTF_8_String) return Boolean is
+
+      function To_Lower  (Item : Wide_Wide_String) return Wide_Wide_String
+                          renames Ada.Wide_Wide_Characters.Handling.To_Lower;
+      function UTF_8_Decode (Item : UTF_8_String) return Wide_Wide_String
+                             renames Ada.Strings.UTF_Encoding.Wide_Wide_Strings.Decode;
+
+      Left_LC: constant Wide_Wide_String := To_Lower(UTF_8_Decode(Left));
+      Right_LC: constant Wide_Wide_String := To_Lower(UTF_8_Decode(Right));
+   begin
+      return Left_LC = Right_LC;
+   end UTF_8_CI_Equal;
+
+   package UTF8_CI_Maps is
      new Ada.Containers.Indefinite_Hashed_Maps(Key_Type        => UTF_8_String,
                                                Element_Type    => UTF_8_String,
-                                               Hash            => SipHash24_String_Hashing.UTF_8_String_Hash,
-                                               Equivalent_Keys => "=",
-                                               "="             => "=");
+                                               Hash            => SipHash24_String_Hashing.UTF_8_String_Hash_Case_Insensitive,
+                                               Equivalent_Keys => UTF_8_CI_Equal,
+                                               "="             => UTF_8_CI_Equal);
 
    subtype Count_Type is Ada.Containers.Count_Type;
 
    Example_Map : String_Maps.Map;
-   Example_UTF8_Map : UTF8_Maps.Map;
+   Example_UTF8_CI_Map : UTF8_CI_Maps.Map;
 
 begin
 
@@ -70,20 +85,20 @@ begin
    end loop;
    New_Line;
 
-   Put_Line("Using UTF8 string maps.");
+   Put_Line("Using UTF_8 case insensitive string maps.");
    Put_Line("Adding keys Türkiye Cumhuriyeti -> Ankara, 中国 -> 北京, UK -> London.");
-   Example_UTF8_Map.Insert("Türkiye Cumhuriyeti", "Ankara");
-   Example_UTF8_Map.Insert("中国", "北京");
-   Example_UTF8_Map.Insert("UK", "London");
+   Example_UTF8_CI_Map.Insert("Türkiye Cumhuriyeti", "Ankara");
+   Example_UTF8_CI_Map.Insert("中国", "北京");
+   Example_UTF8_CI_Map.Insert("UK", "London");
    New_Line;
 
-   Put_Line("Retrieving the value for key '中国': "
-            & Example_UTF8_Map("中国"));
+   Put_Line("Retrieving the value for key 'uK' using wrong casing: "
+            & Example_UTF8_CI_Map("uK"));
    New_Line;
 
    Put_Line("Now reading out key-element pairs:");
-   for I in Example_UTF8_Map.Iterate loop
-      Put_Line(UTF8_Maps.Key(I) & " -> " & UTF8_Maps.Element(I));
+   for I in Example_UTF8_CI_Map.Iterate loop
+      Put_Line(UTF8_CI_Maps.Key(I) & " -> " & UTF8_CI_Maps.Element(I));
    end loop;
    New_Line;
 
