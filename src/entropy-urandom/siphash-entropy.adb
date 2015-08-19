@@ -19,7 +19,7 @@ is
                                 "mis-matched Storage_Element'Size and "&
                                 "Stream_Element'Size");
 
-   function System_Entropy_Available return Boolean is
+   function System_Entropy_Source return Boolean is
      (True);
 
    procedure Set_Key_From_System_Entropy is

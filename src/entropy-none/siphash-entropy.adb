@@ -9,7 +9,7 @@ package body SipHash.Entropy
 with SPARK_Mode => Off
 is
 
-   function System_Entropy_Available return Boolean is
+   function System_Entropy_Source return Boolean is
      (False);
 
    procedure Set_Key_From_System_Entropy is

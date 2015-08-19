@@ -17,7 +17,7 @@ is
    -- if this returns true it is still possible for Set_Key_From_System_Entropy
    -- to fail, for example if there is an IO error or the system declines to
    -- provide enough entropy.
-   function System_Entropy_Available return Boolean;
+   function System_Entropy_Source return Boolean;
 
    -- This procedure will set the SipHash key from a system entropy source,
    -- unless System_Entropy_Available is False, in which case it will raise
