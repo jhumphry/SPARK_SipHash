@@ -38,14 +38,18 @@ begin
    Put_Line("An example of using SipHash with Ada.Containers.Indefinite_Hashed_Maps");
    New_Line;
 
-   if SipHash24.System_Entropy.System_Entropy_Available then
-      Put_Line("Setting SipHash key from system entropy source.");
-      SipHash24.System_Entropy.Set_Key_From_System_Entropy;
-   else
-      Put_Line("No system entropy available to set SipHash key. Note that " &
-                 "this undermines the hash flooding protection supposed to "&
-                 "be provided by SipHash.");
-   end if;
+   declare
+      Seeded : Boolean;
+   begin
+      SipHash24.System_Entropy.Set_Key_From_System_Entropy(Seeded);
+      if Seeded then
+         Put_Line("SipHash key set from system entropy source.");
+      else
+         Put_Line("No system entropy was available to set SipHash key. Note " &
+                    "that this undermines the hash flooding protection "&
+                    "supposed to be provided by SipHash.");
+      end if;
+   end;
    New_Line;
 
    Put_Line("Using regular string maps.");

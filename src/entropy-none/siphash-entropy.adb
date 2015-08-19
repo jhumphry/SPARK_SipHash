@@ -18,4 +18,9 @@ is
         with "System entropy not available on this system";
    end Set_Key_From_System_Entropy;
 
+   procedure Set_Key_From_System_Entropy (Success : out Boolean) is
+   begin
+      Success := False;
+   end Set_Key_From_System_Entropy;
+
 end SipHash.Entropy;

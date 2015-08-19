@@ -57,4 +57,13 @@ is
 
    end Set_Key_From_System_Entropy;
 
+   procedure Set_Key_From_System_Entropy (Success : out Boolean) is
+   begin
+      Set_Key_From_System_Entropy;
+      Success := True;
+   exception
+      when Entropy_Unavailable =>
+         Success := False;
+   end Set_Key_From_System_Entropy;
+
 end SipHash.Entropy;
