@@ -1,0 +1,30 @@
+-- SPARK_SipHash_External
+-- An implementation of SipHash in SPARK 2014 / Ada 2012
+
+-- This project file will not rebuild the library
+
+library project SPARK_SipHash_External is
+
+   for Languages use ("Ada");
+
+   for Library_Name use "spark_siphash";
+   for Library_Kind use "static";
+
+   for Library_Interface use ("SipHash",
+                              "SipHash.Discrete",
+                              "SipHash.Wide_Discrete",
+                              "SipHash.Wide_Wide_Discrete",
+                              "SipHash.General",
+                              "SipHash.Entropy",
+                              "SipHash24",
+                              "SipHash24.System_Entropy",
+                              "SipHash24_String_Hashing"
+                             );
+
+   for Library_Dir use "lib/";
+
+   for Source_Dirs use ("src/");
+
+   for Externally_Built use "true";
+
+end SPARK_SipHash_External;

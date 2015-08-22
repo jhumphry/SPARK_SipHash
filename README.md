@@ -141,6 +141,10 @@ desired implementation of `SipHash.Entropy`. Currently the choices are
 `urandom` to use `/dev/urandom` or `none` to compile a null
 implementation.
 
+The project file `spark_siphash_external.gpr` enables use of the
+library in external projects without prompting the builder to recompile
+it.
+
 The project file `spark_siphash_examples.gpr` can be used to compile
 two example programs. `test_siphash.adb` ensures that the Ada routine
 produces the same output as the reference C implementation for the test
