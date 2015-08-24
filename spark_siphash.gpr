@@ -67,4 +67,9 @@ library project SPARK_SipHash is
       end case;
    end Compiler;
 
+   package Prove is
+      for Switches use ("-j2", "--timeout=3",
+                        "--proof=per_path", "--warnings=continue");
+   end Prove;
+
 end SPARK_SipHash;
