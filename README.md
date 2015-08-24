@@ -157,7 +157,7 @@ with the Ada standard library containers.
 
 A standard invocation of GNATprove on this project is:
 
-    gnatprove -P spark_siphash.gpr -Xmode=analyze -Xentropy=none --warnings=off --timeout=3 --proof=per_path -j2
+    gnatprove -P spark_siphash.gpr -Xmode=analyze -Xentropy=none --warnings=continue --timeout=3 --proof=per_path -j2
 
 The `--timeout` and `-j` settings should be set based on the speed of
 your system and the number of processors available.

@@ -49,9 +49,13 @@ function SipHash.Discrete (m : T_Array) return Hash_Type is
 
 begin
 
+   -- This compile-time check is useful for GNAT but in GNATprove it currently
+   -- just generates a warning that it can not yet prove them correct.
+   pragma Warnings (GNATprove, Off, "Compile_Time_Error");
    pragma Compile_Time_Error ((T'Size > 8),
                               "SipHash.Discrete only works for discrete " &
                                 "types which fit into one byte.");
+   pragma Warnings (GNATprove, On, "Compile_Time_Error");
 
    for I in 1..w-1 loop
       pragma Loop_Invariant (m_pos = T_Index'Base(I - 1) * 8);

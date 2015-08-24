@@ -25,9 +25,13 @@ function SipHash.General_SPARK (m : T) return Hash_Type is
 
 begin
 
+   -- This compile-time check is useful for GNAT but in GNATprove it currently
+   -- just generates a warning that it can not yet prove them correct.
+   pragma Warnings (GNATprove, Off, "Compile_Time_Error");
    pragma Compile_Time_Error (Storage_Element'Size /= 8,
                               "This implementation of SipHash cannot work " &
                                 "with Storage_Element'Size /= 8.");
+   pragma Warnings (GNATprove, On, "Compile_Time_Error");
 
    Write(Buffer => B(1..Buffer_Size),
          Item => m);

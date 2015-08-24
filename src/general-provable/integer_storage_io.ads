@@ -22,6 +22,6 @@ is
    procedure Read (Buffer : in  Buffer_Type; Item : out Integer);
 
    procedure Write(Buffer : out Buffer_Type; Item : in  Integer)
-   with Global => (In_Out => Heap);
+   with Global => (Input => Heap);
 
 end Integer_Storage_IO;
