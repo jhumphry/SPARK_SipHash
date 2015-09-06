@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a Ada 2012 / SPARK 2014 project that implements the
+This is an Ada 2012 / SPARK 2014 project that implements the
 [SipHash](https://131002.net/siphash/) keyed hash function. SipHash was
 designed by Jean-Philippe Aumasson and Daniel J. Bernstein, although
 this implementation is independent of them. SipHash is a hash function
@@ -34,13 +34,13 @@ using only limited network resources.
 There are several very fast hash functions that are perfectly adequate
 for hash table use in safe environments but which are unsafe if exposed
 to possible hash-flooding attacks. SipHash resists these attacks in two
-ways. Firstly it is not a single hash function but a (very large)
-family of hash functions with the function to use selected by a key.
-Secondly it is designed to be as hard as possible to find collisions,
-even if the attacker can gather some information about the use of the
-hash. SipHash is also fast enough to be competitive for hash table use.
-SipHash is probably not suitable for most general purpose cryptographic
-uses due to the small output size.
+ways. Firstly, it is not a single hash function but a (very large)
+family of hash functions parametised by a key. Secondly, it is designed
+to make it as hard as possible to find collisions, even if the attacker
+can gather some information about the use of the hash. SipHash is also
+fast enough to be competitive for hash table use. SipHash is probably
+not suitable for most general purpose cryptographic uses due to the
+small output size.
 
 This project is an implementation in SPARK 2014 which provides a
 verified implementation of SipHash. The verification does not address
@@ -139,7 +139,7 @@ or set to `analyze` (equivalently - `analyse`) to use settings suitable
 for use with GNATprove. The `entropy` parameter can be set to the
 desired implementation of `SipHash.Entropy`. Currently the choices are
 `urandom` to use `/dev/urandom` or `none` to compile a null
-implementation.
+implementation that raises an exception.
 
 The project file `spark_siphash_external.gpr` enables use of the
 library in external projects without prompting the builder to recompile
@@ -167,7 +167,8 @@ The `--timeout` and `-j` settings should be set based on the speed of
 your system and the number of processors available.
 
 SPARK does not fully analyse generic packages. The proofs are therefore
-generated for the specific instantiations in the `SipHash24` packages.
+generated for the specific instantiations in the `SipHash24` packages,
+which cover the common use cases of hasing strings and storage blocks.
 
 ### SPARK and Ada.Storage_IO
 
@@ -182,7 +183,7 @@ The solution found was to make a copy of `SipHash.General` called
 with the appropriate annotations to allow GNATprove to understand the
 specification but to prevent GNATprove from analysing the body. An
 instantiation of this package is also proved to act as a target for
-GNATprove. Running `diff` between `SipHash.General` and
+GNATprove. Running a `diff` between `SipHash.General` and
 `SipHash.General_SPARK` shows how minimal the differences are, and so
 provides a justification for believing that the proof of the latter
 provides evidence of the correctness of the former.
