@@ -36,8 +36,8 @@ begin
    -- just generates a warning that it can not yet prove them correct.
    pragma Warnings (GNATprove, Off, "Compile_Time_Error");
    pragma Compile_Time_Error ((T'Size > 32),
-                              "SipHash.Discrete only works for discrete " &
-                                "types which fit into four bytes.");
+                              "SipHash.Wide_Wide_Discrete only works for " &
+                                "discrete types which fit into four bytes.");
    pragma Warnings (GNATprove, On, "Compile_Time_Error");
 
    for I in 1..w-1 loop

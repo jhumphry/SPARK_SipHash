@@ -49,7 +49,7 @@ begin
    -- just generates a warning that it can not yet prove them correct.
    pragma Warnings (GNATprove, Off, "Compile_Time_Error");
    pragma Compile_Time_Error ((T'Size > 16),
-                              "SipHash.Discrete only works for discrete " &
+                              "SipHash.Wide_Discrete only works for discrete " &
                                 "types which fit into two bytes.");
    pragma Warnings (GNATprove, On, "Compile_Time_Error");
 
