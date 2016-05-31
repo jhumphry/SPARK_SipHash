@@ -161,10 +161,9 @@ A standard invocation of GNATprove on this project is:
 
 This uses standard settings that are equivalent to:
 
-    gnatprove -P spark_siphash.gpr -Xmode=analyze -Xentropy=none --warnings=continue --timeout=3 --proof=per_path -j2
+    gnatprove -P spark_siphash.gpr -Xmode=analyze -Xentropy=none -j0 --timeout=5 --level=2 --proof=progressive --warnings=continue
 
-The `--timeout` and `-j` settings should be set based on the speed of
-your system and the number of processors available.
+The settings should be adjusted based on the speed of your system.
 
 SPARK does not fully analyse generic packages. The proofs are therefore
 generated for the specific instantiations in the `SipHash24` packages,
