@@ -99,12 +99,14 @@ chosen.
 
 ### Package `SipHash.Entropy`
 
-This package provides routines to indicate if a system entropy source
-is available, and to attempt to set the SipHash key using it. Two
-implementations of this package are currently included, one that
-assumes no system entropy source is available and one that uses
-`/dev/urandom` on Linux or other Unix-like systems. A suitable
-implementation should be compiled into the library.
+This package provides routines to indicate if a system entropy source is
+available, and to attempt to set the SipHash key using it. Three
+implementations of this package are currently included, one that assumes no
+system entropy source is available, one that uses `/dev/urandom` on Linux or
+other Unix-like systems and one that uses the `getrandom` system call on
+Linux. A suitable implementation should be compiled into the library to
+provide randomisation - if an attacker can predict the key used for SipHash,
+the benefit provided by using the package will be very limited.
 
 Note that the facilities in `Ada.Numerics.Discrete_Random` may not be
 sufficient to set the key. The time-dependent reset function may lead
@@ -132,13 +134,13 @@ but exist to address an issue with the formal verification of
 
 ## Project files and examples
 
-A project file `spark_siphash.gpr` has been provided for use with GNAT
-and GNATprove. This takes two parameters. The `mode` parameter can be
-set to `debug` or `optimize` to produce the library itself with GNAT,
-or set to `analyze` (equivalently - `analyse`) to use settings suitable
-for use with GNATprove. The `entropy` parameter can be set to the
-desired implementation of `SipHash.Entropy`. Currently the choices are
-`urandom` to use `/dev/urandom` or `none` to compile a null
+A project file `spark_siphash.gpr` has been provided for use with GNAT and
+GNATprove. This takes two parameters. The `mode` parameter can be set to
+`debug` or `optimize` to produce the library itself with GNAT, or set to
+`analyze` (equivalently - `analyse`) to use settings suitable for use with
+GNATprove. The `entropy` parameter can be set to the desired implementation of
+`SipHash.Entropy`. Currently the choices are `getrandom` to use this system
+call on Linux, `urandom` to use `/dev/urandom`, or `none` to compile a null
 implementation that raises an exception.
 
 The project file `spark_siphash_external.gpr` enables use of the

@@ -6,10 +6,15 @@ library project SPARK_SipHash is
    type Mode_Type is ("debug", "optimize", "analyse", "analyze");
    Mode : Mode_Type := external ("mode", "debug");
 
-   type Entropy_Type is ("none", "urandom");
-   Entropy_Source : Entropy_Type := external ("entropy", "urandom");
+   type Entropy_Type is ("none", "urandom", "getrandom");
+   Entropy_Source : Entropy_Type := external ("entropy", "getrandom");
 
-   for Languages use ("Ada");
+   case Entropy_Source is
+      when "none"|"urandom" =>
+         for Languages use ("Ada");
+      when "getrandom" =>
+         for Languages use ("Ada", "C");
+   end case;
 
    for Library_Name use "spark_siphash";
    for Library_Kind use "static";
@@ -37,6 +42,8 @@ library project SPARK_SipHash is
          Entropy_Source_Dirs := "src/entropy-none/";
       when "urandom" =>
          Entropy_Source_Dirs := "src/entropy-urandom/";
+      when "getrandom" =>
+         Entropy_Source_Dirs := "src/entropy-getrandom/";
    end case;
 
    case Mode is
