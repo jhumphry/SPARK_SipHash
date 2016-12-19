@@ -48,9 +48,9 @@ is
       or Shift_Left(U64(S(6)), 48)
       or Shift_Left(U64(S(7)), 56));
 
-   ----------------------
-   -- SArray_to_U64_LE --
-   ----------------------
+   ---------------------------
+   -- SArray_Tail_to_U64_LE --
+   ---------------------------
 
    function SArray_Tail_to_U64_LE (S : in SArray)
                               return U64 is
