@@ -27,7 +27,9 @@ library project SPARK_SipHash is
                               "SipHash.Entropy",
                               "SipHash24",
                               "SipHash24.System_Entropy",
-                              "SipHash24_String_Hashing"
+                              "SipHash24_String_Hashing",
+                              "Half_SipHash",
+                              "Half_SipHash24"
                              );
 
    for Object_Dir use "build/";
