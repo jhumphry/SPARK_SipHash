@@ -2,13 +2,13 @@
 
 ## Introduction
 
-This is an Ada 2012 / SPARK 2014 project that implements the
-[SipHash](https://131002.net/siphash/) keyed hash function. SipHash was
-designed by Jean-Philippe Aumasson and Daniel J. Bernstein, although
-this implementation is independent of them. SipHash is a hash function
-optimised for speed on short messages, but which uses modern
-cryptographic design concepts in order to be as close to a true PRF
-(Pseudo-Random Function) as possible.
+This is an Ada 2012 / [SPARK 2014](http://www.spark-2014.org/about) 
+project that implements the [SipHash](https://131002.net/siphash/) 
+keyed hash function. SipHash was designed by Jean-Philippe Aumasson and 
+Daniel J. Bernstein, although this implementation is independent of 
+them. SipHash is a hash function optimised for speed on short messages, 
+but which uses modern cryptographic design concepts in order to be as 
+close to a true PRF (Pseudo-Random Function) as possible.
 
 This project is free software (ISC permissive licence) and is provided
 with no warranties, as set out in the file LICENSE. The original
