@@ -18,7 +18,9 @@ library project SPARK_SipHash_External is
                               "SipHash.Entropy",
                               "SipHash24",
                               "SipHash24.System_Entropy",
-                              "SipHash24_String_Hashing"
+                              "SipHash24_String_Hashing",
+                              "HalfSipHash",
+                              "HalfSipHash24"
                              );
 
    for Library_Dir use "lib/";

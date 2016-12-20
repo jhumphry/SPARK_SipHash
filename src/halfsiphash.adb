@@ -1,4 +1,4 @@
--- Half SipHash
+-- HalfSipHash
 -- A 32-bit friendly version of SipHash, the algorithm described in
 -- "SipHash: a fast short-input PRF"
 -- by Jean-Philippe Aumasson and Daniel J. Bernstein
@@ -10,7 +10,7 @@
 
 with System;
 
-package body Half_SipHash with
+package body HalfSipHash with
 SPARK_Mode,
 Refined_State => (Initial_Hash_State => Initial_State)
 is
@@ -25,7 +25,7 @@ is
    -- This could really be in the private part of the package, but SPARK GPL
    -- 2015 doesn't seem to like Part_Of in the private part of a package,
    -- regardless of what the SPARK RM says...
-   Initial_State : Half_SipHash_State := (k0,
+   Initial_State : HalfSipHash_State := (k0,
                                           k1,
                                           k0 xor 16#6c796765#,
                                           k1 xor 16#74656462#);
@@ -34,7 +34,7 @@ is
    -- Get_Initial_State --
    -----------------------
 
-   function Get_Initial_State return Half_SipHash_State is
+   function Get_Initial_State return HalfSipHash_State is
       (Initial_State);
 
    -----------------------
@@ -64,11 +64,11 @@ is
       return R;
    end SArray_Tail_to_U32_LE;
 
-   --------------
-   -- SipRound --
-   --------------
+   ---------------
+   -- Sip_Round --
+   ---------------
 
-   procedure Sip_Round (v : in out Half_SipHash_State) is
+   procedure Sip_Round (v : in out HalfSipHash_State) is
    begin
       v(0) := v(0) + v(1);
       v(1) := Rotate_Left(v(1), 5);
@@ -86,13 +86,13 @@ is
       v(2) := Rotate_Left(v(2), 16);
    end Sip_Round;
 
-   ---------------------
-   -- SipFinalization --
-   ---------------------
+   ----------------------
+   -- Sip_Finalization --
+   ----------------------
 
-   function Sip_Finalization (v : in Half_SipHash_State)
+   function Sip_Finalization (v : in HalfSipHash_State)
                              return U32 is
-      vv : Half_SipHash_State := v;
+      vv : HalfSipHash_State := v;
    begin
       vv(2) := vv(2) xor 16#ff#;
       for I in 1..d_rounds loop
@@ -101,9 +101,9 @@ is
       return (vv(1) xor vv(3));
    end Sip_Finalization;
 
-   ------------
-   -- SetKey --
-   ------------
+   -------------
+   -- Set_Key --
+   -------------
 
    procedure Set_Key (k0, k1 : U32) is
    begin
@@ -113,7 +113,7 @@ is
                         k1 xor 16#74656462#);
    end Set_Key;
 
-   procedure Set_Key (k : Half_SipHash_Key) is
+   procedure Set_Key (k : HalfSipHash_Key) is
       k0, k1 : U32;
    begin
       k0 := SArray4_to_U32_LE(k(k'First..k'First+3));
@@ -121,16 +121,16 @@ is
       Set_Key(k0, k1);
    end Set_Key;
 
-   ------------------
-   -- Half_SipHash --
-   ------------------
+   -----------------
+   -- HalfSipHash --
+   -----------------
 
-   function Half_SipHash (m : System.Storage_Elements.Storage_Array)
+   function HalfSipHash (m : System.Storage_Elements.Storage_Array)
       return U32
    is
       m_pos : Storage_Offset := 0;
       m_i : U32;
-      v : Half_SipHash_State := Initial_State;
+      v : HalfSipHash_State := Initial_State;
       w : constant Storage_Offset := (m'Length / 4) + 1;
 
    begin
@@ -169,6 +169,6 @@ is
       v(0) := v(0) xor m_i;
 
       return Sip_Finalization(v);
-   end Half_SipHash;
+   end HalfSipHash;
 
-end Half_SipHash;
+end HalfSipHash;

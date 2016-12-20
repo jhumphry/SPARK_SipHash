@@ -14,7 +14,7 @@ use Interfaces;
 with System.Storage_Elements;
 use System.Storage_Elements;
 
-with Half_SipHash24;
+with HalfSipHash24;
 with SipHash24_c;
 
 procedure Test_HalfSipHash is
@@ -39,15 +39,15 @@ procedure Test_HalfSipHash is
    Expected_Result : constant Unsigned_32 := 16#972BFE74#;
 
 begin
-   Put_Line("Testing Half_SipHash routines.");
+   Put_Line("Testing HalfSipHash routines.");
    New_Line;
 
-   Put_Line("Test vector for Half_SipHash");
+   Put_Line("Test vector for HalfSipHash");
 
-   Half_SipHash24.Set_Key(K);
+   HalfSipHash24.Set_Key(K);
 
    Put("Result received from Ada routine for the test vector: ");
-   Put(Half_SipHash24.Half_SipHash(M), Base => 16); New_Line;
+   Put(HalfSipHash24.HalfSipHash(M), Base => 16); New_Line;
 
    Discard := SipHash24_c.C_HalfSipHash24(c_in => C_M(0)'Access,
                                           inlen => C_M'Length,
@@ -73,7 +73,7 @@ begin
             M(Storage_Offset(J)) := Storage_Element(J mod 256);
             C_M(J) := Unsigned_8(J mod 256);
          end loop;
-         Result := Half_SipHash24.Half_SipHash(M);
+         Result := HalfSipHash24.HalfSipHash(M);
          Discard := SipHash24_c.C_HalfSipHash24(c_in => C_M(0)'Access,
                                                 inlen => C_M'Length,
                                                 k => C_K(0)'Access,
