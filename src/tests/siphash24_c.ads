@@ -24,10 +24,12 @@ package SipHash24_c is
                                   Target => U8_Access);
 
    function C_SipHash24
-     (c_out : access Interfaces.Unsigned_8;
+     (
       c_in : access Interfaces.Unsigned_8;
-      inlen : Interfaces.Unsigned_64;
-      k : access Interfaces.Unsigned_8
+      inlen : Interfaces.C.size_t;
+      k : access Interfaces.Unsigned_8;
+      c_out : access Interfaces.Unsigned_8;
+      outlen : Interfaces.C.size_t
      ) return C.int;
    pragma Import (C, C_SipHash24, "siphash");
 

@@ -72,10 +72,13 @@ begin
    Put("Result received from Ada routine for the test vector: ");
    Put(SipHash24.SipHash(M), Base => 16); New_Line;
 
-   Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
+   Discard := SipHash24_c.C_SipHash24(
                                       c_in => C_M(0)'Access,
                                       inlen => C_M'Length,
-                                      k => C_K(0)'Access);
+                                      k => C_K(0)'Access,
+                                      c_out => C_Output(0)'Access,
+                                      outlen => 8
+                                     );
    C_Result := SipHash24_c.U8_Array8_to_U64(C_Output);
    Put("Result received from reference C routine for the test vector: ");
    Put(C_Result, Base => 16); New_Line;
@@ -88,10 +91,13 @@ begin
    Put("Result received from Ada routine (truncated for use in Ada.Containers): ");
    Put(SipHash24_String_Hashing.String_Hash(Test_String), Base => 16); New_Line;
 
-   Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
+   Discard := SipHash24_c.C_SipHash24(
                                       c_in => SipHash24_c.chars_ptr_to_U8_Access(Test_C_String),
                                       inlen => Test_String'Length,
-                                      k => C_K(0)'Access);
+                                      k => C_K(0)'Access,
+                                      c_out => C_Output(0)'Access,
+                                      outlen => 8
+                                     );
    C_Result := SipHash24_c.U8_Array8_to_U64(C_Output);
    Put("Result received from reference C routine: ");
    Put(C_Result, Base => 16); New_Line;
@@ -118,10 +124,13 @@ begin
             C_M(J) := Unsigned_8(J mod 256);
          end loop;
          Result := SipHash24.SipHash(M);
-         Discard := SipHash24_c.C_SipHash24(c_out => C_Output(0)'Access,
+         Discard := SipHash24_c.C_SipHash24(
                                             c_in => C_M(0)'Access,
-                                            inlen => Unsigned_64(I),
-                                            k => C_K(0)'Access);
+                                            inlen => Interfaces.C.size_t(I),
+                                            k => C_K(0)'Access,
+                                            c_out => C_Output(0)'Access,
+                                            outlen => 8
+                                           );
          C_Result := SipHash24_c.U8_Array8_to_U64(C_Output);
          if Result /= C_Result then
             Put("Difference in result for: "); Put(I); New_Line;
