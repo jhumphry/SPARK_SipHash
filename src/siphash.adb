@@ -65,9 +65,9 @@ is
       return R;
    end SArray_Tail_to_U64_LE;
 
-   --------------
-   -- SipRound --
-   --------------
+   ---------------
+   -- Sip_Round --
+   ---------------
 
    procedure Sip_Round (v : in out SipHash_State) is
    begin
@@ -88,9 +88,9 @@ is
       v(2) := Rotate_Left(v(2), 32);
    end Sip_Round;
 
-   ---------------------
-   -- SipFinalization --
-   ---------------------
+   ----------------------
+   -- Sip_Finalization --
+   ----------------------
 
    function Sip_Finalization (v : in SipHash_State)
                              return U64 is
@@ -103,9 +103,9 @@ is
       return (vv(0) xor vv(1) xor vv(2) xor vv(3));
    end Sip_Finalization;
 
-   ------------
-   -- SetKey --
-   ------------
+   -------------
+   -- Set_Key --
+   -------------
 
    procedure Set_Key (k0, k1 : U64) is
    begin
