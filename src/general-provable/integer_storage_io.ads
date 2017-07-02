@@ -6,10 +6,17 @@
 
 with System.Storage_Elements;
 
+pragma Warnings (Off, "no procedure exists that can initialize abstract state");
+-- The references to the Heap as an Abstract_State of the package are necessary
+-- for SPARK GPL 2016 but cause a (non-fatal) warning in SPARK Discovery GPL
+-- 2017.
+
 package Integer_Storage_IO
 with SPARK_Mode => On,
-  Abstract_State => Heap -- This is necessary for reasons not yet understood
+  Abstract_State => Heap -- This is necessary for SPARK GPL 2016
 is
+
+   pragma Warnings (On, "no procedure exists that can initialize abstract state");
 
    use type System.Storage_Elements.Storage_Offset;
 
