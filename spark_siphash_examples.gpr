@@ -32,9 +32,11 @@ project SPARK_SipHash_Examples is
                                                 "-gnata", "-gnatf", "-gnato",
                                                 "-gnateA", "-gnateV", "-gnatVa",
                                                 "-gnatwa.f", "-gnatwZ",
-                                                "-gnatyaAbCdfhiknprux");
+                                                "-gnatyaAbCdfhiknprux",
+                                                "-fPIE");
          when "optimize" =>
-            for Default_Switches ("ada") use ("-gnat2012", "-O3", "-gnatn");
+            for Default_Switches ("ada") use ("-gnat2012", "-O3",
+                                              "-gnatp", "-gnatn", "-fPIE");
       end case;
    end Compiler;
 
