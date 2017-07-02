@@ -37,7 +37,10 @@ is
    -- particularly useful if you want to avoid dynamic elaboration.
 
    function HalfSipHash (m : System.Storage_Elements.Storage_Array) return U32
-     with Pre => (m'Length < System.Storage_Elements.Storage_Offset'Last),
+     with Pre => (if m'First <= 0 then
+                    (Long_Long_Integer (m'Last) < Long_Long_Integer'Last +
+                         Long_Long_Integer (m'First))
+                 ),
      Global => (Input => Initial_Hash_State);
    -- This is the full implementation of HalfSipHash, intended to exactly
    -- match the reference code. The precondition looks odd, but it is
@@ -64,7 +67,17 @@ private
 
    function SArray_Tail_to_U32_LE (S : in SArray)
                                    return U32
-     with Inline, Pre => (S'Length <= 3 and then S'Length > 0);
+     with Inline,
+     Pre => (if S'First <= 0 then
+               (
+                (Long_Long_Integer (S'Last) < Long_Long_Integer'Last +
+                  Long_Long_Integer (S'First))
+                and then
+                  S'Length in 1..3
+               )
+                 else
+                   S'Length in 1..3
+            );
 
    procedure Sip_Round (v : in out HalfSipHash_State) with Inline;
 

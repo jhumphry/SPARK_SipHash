@@ -34,7 +34,10 @@ is
    -- particularly useful if you want to avoid dynamic elaboration.
 
    function SipHash (m : System.Storage_Elements.Storage_Array) return U64
-     with Pre => (m'Length < System.Storage_Elements.Storage_Offset'Last),
+     with Pre => (if m'First <= 0 then
+                    (Long_Long_Integer (m'Last) < Long_Long_Integer'Last +
+                         Long_Long_Integer (m'First))
+                 ),
      Global => (Input => Initial_Hash_State);
    -- This is the full implementation of SipHash, intended to exactly match
    -- the original paper. The precondition looks odd, but it is because
@@ -61,7 +64,17 @@ private
 
    function SArray_Tail_to_U64_LE (S : in SArray)
                                    return U64
-     with Inline, Pre => (S'Length <= 7 and then S'Length > 0);
+     with Inline,
+     Pre => (if S'First <= 0 then
+               (
+                (Long_Long_Integer (S'Last) < Long_Long_Integer'Last +
+                  Long_Long_Integer (S'First))
+                and then
+                  S'Length in 1..7
+               )
+                 else
+                   S'Length in 1..7
+            );
 
    procedure Sip_Round (v : in out SipHash_State) with Inline;
 
